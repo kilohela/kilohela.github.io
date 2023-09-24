@@ -13,7 +13,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/2023/09/24/risc-v/"/>
+    <link rel="canonical" href="http://kilohela.github.io/2023/09/24/risc-v/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -21,19 +21,19 @@
         <meta name="description" content="Intro：操作对象：寄存器、内存和常数 指令（instruction &#x2F; command）对操作数（operands）进行操作。在 sub a, b, c 中，变量 a、b 和 c 都是 operand。但是计算机在 1 和 0 上运行，而不是变量名称。指令需要一个物理位置来检索二进制数据。operands可以存储在寄存器（register）或内存（memory）中，或者它们可能是存储">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RISC-V 汇编语言基本命令">
-<meta property="og:url" content="http://example.com/2023/09/24/RISC-V/index.html">
+<meta property="og:url" content="http://kilohela.github.io/2023/09/24/RISC-V/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Intro：操作对象：寄存器、内存和常数 指令（instruction &#x2F; command）对操作数（operands）进行操作。在 sub a, b, c 中，变量 a、b 和 c 都是 operand。但是计算机在 1 和 0 上运行，而不是变量名称。指令需要一个物理位置来检索二进制数据。operands可以存储在寄存器（register）或内存（memory）中，或者它们可能是存储">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/%5Cpic%5Cimage-20230923141740041.png">
-<meta property="og:image" content="http://example.com/%5Cpic%5Cimage-20230923173115031.png">
+<meta property="og:image" content="http://kilohela.github.io/%5Cpic%5Cimage-20230923141740041.png">
+<meta property="og:image" content="http://kilohela.github.io/%5Cpic%5Cimage-20230923173115031.png">
 <meta property="article:published_time" content="2023-09-23T16:02:00.000Z">
 <meta property="article:modified_time" content="2023-09-24T02:29:06.608Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="RISC-V">
 <meta property="article:tag" content="计组">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/%5Cpic%5Cimage-20230923141740041.png">
+<meta name="twitter:image" content="http://kilohela.github.io/%5Cpic%5Cimage-20230923141740041.png">
     
     
     <!--- Icon Part-->
@@ -78,7 +78,7 @@
     
     <script id="hexo-configurations">
     let Global = window.Global || {};
-    Global.hexo_config = {"hostname":"example.com","root":"/","language":"en"};
+    Global.hexo_config = {"hostname":"kilohela.github.io","root":"/","language":"en"};
     Global.theme_config = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/Konachan-362651.jpg","dark":"/images/1694917425487.jpg"},"title":"Welcome to Neverland","subtitle":{"text":["What is mind? No matter; What is matter? Never mind."],"hitokoto":{"enable":true,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":"https://github.com/kilohela","instagram":null,"zhihu":null,"twitter":null,"email":"kilohela@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.4.4","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2023/9/17 11:05:00"};
     Global.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
     Global.data_config = {"masonry":false};
@@ -130,7 +130,7 @@
     <div class="navbar-content">
         <div class="left">
             
-            <a class="logo-title" href="http://example.com/">
+            <a class="logo-title" href="http://kilohela.github.io/">
                 
                 Hela&#39;s blog
                 
@@ -561,7 +561,7 @@
             </li>
         
         <li>
-            <strong>Link:</strong> http://example.com/2023/09/24/RISC-V/
+            <strong>Link:</strong> http://kilohela.github.io/2023/09/24/RISC-V/
         </li>
         <li>
             <strong>
