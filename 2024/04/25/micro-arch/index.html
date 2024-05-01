@@ -18,12 +18,12 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。 参考设计结构 （具体实现在该图像基础上有所改动） 总体功能描述PC存放下一个需要执行的指令的地址。 时钟前PCNext接收执行完指令的计算结果，PC储存待执行指令的地址，RD直接将（下一个）指令内容读出并发送给相应部件，Control Unit立刻输出所有控制信号。 时">
+        <meta name="description" content="本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。 目前尚未支持的指令：LB, LH, LBU, LHU, SB, SH, FENCE, ECALL, EBREAK bug：x0寄存器写入时多驱动，懒得改了 尚未支持的功能：MMIO github: kilohela&#x2F;riscv-cpu-1: 第一版RISCV处">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RISCV处理器设计(1)">
+<meta property="og:title" content="RISC-V处理器设计(1)">
 <meta property="og:url" content="http://kilohela.github.io/2024/04/25/micro-arch/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。 参考设计结构 （具体实现在该图像基础上有所改动） 总体功能描述PC存放下一个需要执行的指令的地址。 时钟前PCNext接收执行完指令的计算结果，PC储存待执行指令的地址，RD直接将（下一个）指令内容读出并发送给相应部件，Control Unit立刻输出所有控制信号。 时">
+<meta property="og:description" content="本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。 目前尚未支持的指令：LB, LH, LBU, LHU, SB, SH, FENCE, ECALL, EBREAK bug：x0寄存器写入时多驱动，懒得改了 尚未支持的功能：MMIO github: kilohela&#x2F;riscv-cpu-1: 第一版RISCV处">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://kilohela.github.io/images/image-20240406165721468.png">
 <meta property="og:image" content="http://kilohela.github.io/images/image-20240407162246942.png">
@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://kilohela.github.io/images/image-20240407153111883.png">
 <meta property="og:image" content="http://kilohela.github.io/images/image-20240407123648934.png">
 <meta property="article:published_time" content="2024-04-25T14:50:27.000Z">
-<meta property="article:modified_time" content="2024-04-25T15:01:47.420Z">
+<meta property="article:modified_time" content="2024-05-01T05:00:27.801Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="RISC-V">
 <meta property="article:tag" content="计组">
@@ -48,7 +48,7 @@
     
     <title>
         
-            RISCV处理器设计(1) -
+            RISC-V处理器设计(1) -
         
         Hela&#39;s blog
     </title>
@@ -247,7 +247,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">RISCV处理器设计(1)</h1>
+                <h1 class="article-title-regular">RISC-V处理器设计(1)</h1>
             
             </div>
             
@@ -274,8 +274,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-04-25 23:01:47</span>
-            <span class="mobile">2024-04-25 23:01:47</span>
+            <span class="desktop">2024-05-01 13:27</span>
+            <span class="mobile">2024-05-01 13:27</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -318,6 +318,10 @@
 
         <div class="article-content markdown-body">
             <p>本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。</p>
+<p>目前尚未支持的指令：LB, LH, LBU, LHU, SB, SH, FENCE, ECALL, EBREAK</p>
+<p>bug：x0寄存器写入时多驱动，懒得改了</p>
+<p>尚未支持的功能：MMIO</p>
+<p>github: <a class="link"   target="_blank" rel="noopener" href="https://github.com/kilohela/riscv-cpu-1" >kilohela&#x2F;riscv-cpu-1: 第一版RISCV处理器，很菜 (github.com) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <h2 id="参考设计结构"><a href="#参考设计结构" class="headerlink" title="参考设计结构"></a>参考设计结构</h2><p><img  
                      lazyload
                      src="/images/loading.svg"
@@ -437,14 +441,14 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>Title:</strong> RISCV处理器设计(1)</li>
+        <li><strong>Title:</strong> RISC-V处理器设计(1)</li>
         <li><strong>Author:</strong> Hela</li>
         <li><strong>Created at
                 :</strong> 2024-04-25 22:50:27</li>
         
             <li>
                 <strong>Updated at
-                    :</strong> 2024-04-25 23:01:47
+                    :</strong> 2024-05-01 13:00:27
             </li>
         
         <li>
@@ -512,7 +516,7 @@
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">On this page</div>
-        <div class="page-title">RISCV处理器设计(1)</div>
+        <div class="page-title">RISC-V处理器设计(1)</div>
         <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%AE%BE%E8%AE%A1%E7%BB%93%E6%9E%84"><span class="nav-text">参考设计结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E4%BD%93%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0"><span class="nav-text">总体功能描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%92%9F%E5%89%8D"><span class="nav-text">时钟前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%92%9F%E4%B8%8A%E5%8D%87%E6%B2%BF%EF%BC%9A%E7%8A%B6%E6%80%81%E6%9B%B4%E6%96%B0"><span class="nav-text">时钟上升沿：状态更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Control-Unit"><span class="nav-text">Control Unit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0"><span class="nav-text">输入描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86RV32I"><span class="nav-text">指令集RV32I</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">寄存器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-text">指令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E6%95%B0%E6%89%A9%E5%B1%95%E6%A0%BC%E5%BC%8F"><span class="nav-text">立即数扩展格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory"><span class="nav-text">Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0"><span class="nav-text">功能描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Register-File"><span class="nav-text">Register File</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">功能描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PC%E7%BB%84%E4%BB%B6"><span class="nav-text">PC组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">功能描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jal%E6%8C%87%E4%BB%A4"><span class="nav-text">jal指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ALU"><span class="nav-text">ALU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">功能描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Immediate-Extend"><span class="nav-text">Immediate Extend</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-4"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-4"><span class="nav-text">输出描述</span></a></li></ol></li></ol>
 
     </div>
