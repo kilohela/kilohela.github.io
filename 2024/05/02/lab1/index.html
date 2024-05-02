@@ -13,30 +13,24 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://kilohela.github.io/2024/04/25/micro-arch/"/>
+    <link rel="canonical" href="http://kilohela.github.io/2024/05/02/lab1/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。 目前尚未支持的指令：LB, LH, LBU, LHU, SB, SH, FENCE, ECALL, EBREAK bug：x0寄存器写入时多驱动，懒得改了 尚未支持的功能：MMIO github: kilohela&#x2F;riscv-cpu-1: 第一版RISCV处">
+        <meta name="description" content="文档参考：Ralf Brown’s Files (cmu.edu)  代码参考：显示方式与字符输出 - 知乎 (zhihu.com)  实验参考与部分代码资源获取：Yanyan’s Wiki (jyywiki.cn)  技术支持：文心一言 (baidu.com)  实验环境的配置 安装QEMU模拟硬件和行为 sudo apt install qemu-system-x86 （QEMU使用的是Sea">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RISC-V处理器设计(1)">
-<meta property="og:url" content="http://kilohela.github.io/2024/04/25/micro-arch/index.html">
+<meta property="og:title" content="通过BIOS中断在SeaBIOS上输出字符串">
+<meta property="og:url" content="http://kilohela.github.io/2024/05/02/lab1/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。 目前尚未支持的指令：LB, LH, LBU, LHU, SB, SH, FENCE, ECALL, EBREAK bug：x0寄存器写入时多驱动，懒得改了 尚未支持的功能：MMIO github: kilohela&#x2F;riscv-cpu-1: 第一版RISCV处">
+<meta property="og:description" content="文档参考：Ralf Brown’s Files (cmu.edu)  代码参考：显示方式与字符输出 - 知乎 (zhihu.com)  实验参考与部分代码资源获取：Yanyan’s Wiki (jyywiki.cn)  技术支持：文心一言 (baidu.com)  实验环境的配置 安装QEMU模拟硬件和行为 sudo apt install qemu-system-x86 （QEMU使用的是Sea">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://kilohela.github.io/images/image-20240406165721468.png">
-<meta property="og:image" content="http://kilohela.github.io/images/image-20240407162246942.png">
-<meta property="og:image" content="http://kilohela.github.io/images/image-20240407152301642.png">
-<meta property="og:image" content="http://kilohela.github.io/images/image-20240407153111883.png">
-<meta property="og:image" content="http://kilohela.github.io/images/image-20240407123648934.png">
-<meta property="article:published_time" content="2024-04-25T14:50:27.000Z">
-<meta property="article:modified_time" content="2024-05-01T05:00:27.801Z">
+<meta property="article:published_time" content="2024-05-02T12:42:43.000Z">
+<meta property="article:modified_time" content="2024-05-02T12:44:56.909Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="RISC-V">
-<meta property="article:tag" content="计组">
+<meta property="article:tag" content="x86">
+<meta property="article:tag" content="实验">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://kilohela.github.io/images/image-20240406165721468.png">
     
     
     <!--- Icon Part-->
@@ -48,7 +42,7 @@
     
     <title>
         
-            RISC-V处理器设计(1) -
+            通过BIOS中断在SeaBIOS上输出字符串 -
         
         Hela&#39;s blog
     </title>
@@ -247,7 +241,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">RISC-V处理器设计(1)</h1>
+                <h1 class="article-title-regular">通过BIOS中断在SeaBIOS上输出字符串</h1>
             
             </div>
             
@@ -267,15 +261,15 @@
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2024-04-25 22:50:27</span>
-        <span class="mobile">2024-04-25 22:50:27</span>
+        <span class="desktop">2024-05-02 20:42:43</span>
+        <span class="mobile">2024-05-02 20:42:43</span>
         <span class="hover-info">Created</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-05-01 13:27</span>
-            <span class="mobile">2024-05-01 13:27</span>
+            <span class="desktop">2024-05-02 20:44:56</span>
+            <span class="mobile">2024-05-02 20:44:56</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -287,11 +281,11 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/RISC-V/">RISC-V</a>&nbsp;
+                        <a href="/tags/x86/">x86</a>&nbsp;
                     </li>
                 
                     <li>
-                        | <a href="/tags/%E8%AE%A1%E7%BB%84/">计组</a>&nbsp;
+                        | <a href="/tags/%E5%AE%9E%E9%AA%8C/">实验</a>&nbsp;
                     </li>
                 
             </ul>
@@ -317,123 +311,52 @@
 
 
         <div class="article-content markdown-body">
-            <p>本文档为学习RISCV指令集处理器设计的第一个作品，主要为熟悉RTL设计的流程，并没有实现RV32I的全部指令，后面可能会补上。</p>
-<p>目前尚未支持的指令：LB, LH, LBU, LHU, SB, SH, FENCE, ECALL, EBREAK</p>
-<p>bug：x0寄存器写入时多驱动，懒得改了</p>
-<p>尚未支持的功能：MMIO</p>
-<p>github: <a class="link"   target="_blank" rel="noopener" href="https://github.com/kilohela/riscv-cpu-1" >kilohela&#x2F;riscv-cpu-1: 第一版RISCV处理器，很菜 (github.com) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<h2 id="参考设计结构"><a href="#参考设计结构" class="headerlink" title="参考设计结构"></a>参考设计结构</h2><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/image-20240406165721468.png"
-                      alt="image-20240406165721468"
-                ></p>
-<p>（具体实现在该图像基础上有所改动）</p>
-<h2 id="总体功能描述"><a href="#总体功能描述" class="headerlink" title="总体功能描述"></a>总体功能描述</h2><p>PC存放下一个需要执行的指令的地址。</p>
-<h3 id="时钟前"><a href="#时钟前" class="headerlink" title="时钟前"></a>时钟前</h3><p>PCNext接收执行完指令的计算结果，PC储存待执行指令的地址，RD直接将（下一个）指令内容读出并发送给相应部件，Control Unit立刻输出所有控制信号。</p>
-<h3 id="时钟上升沿：状态更新"><a href="#时钟上升沿：状态更新" class="headerlink" title="时钟上升沿：状态更新"></a>时钟上升沿：状态更新</h3><p>时钟上升沿前来到稳态，PC更新为下一个指令做准备，（注意此时所有信号为上个指令对应的值）Register File执行上个指令的写操作，并立刻（组合逻辑）读出对应地址的数据参与下一轮的计算。Data Memory 根据上个指令的写使能做写入内存操作</p>
-<h2 id="Control-Unit"><a href="#Control-Unit" class="headerlink" title="Control Unit"></a>Control Unit</h2><p>输入机器码，输出对各个部件的协调控制。</p>
-<h3 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述"></a>输出描述</h3><ul>
-<li>PCSrc：PC Source，控制程序计数器下一个值为自身加4（下一行）或跳转</li>
-<li>ResultSrc：Result Source，控制写入寄存器数据结果为ALU计算输出或内存读取，<strong>此处修改为3bits，且增加jal线路和ImmExt直连线路和PCTarget直连线路</strong></li>
-<li>MemWrite：Memory Write Enable 内存写使能</li>
-<li>ALUControl：ALU控制信号，<strong>此处修改为4位</strong></li>
-<li>ALUSrc：ALU Source，控制ALU的第二个oprand是来自Immediate还是Register</li>
-<li>ImmSrc：Immediate Source，控制 I-type 指令立即数的编码方式，<strong>因为立即数有5种扩展方式，因此将教科书上的ImmExt信号线ImmSrc改为3位</strong></li>
-<li>RegWrite：Register Write Enable，寄存器写使能</li>
-</ul>
-<h3 id="输入描述"><a href="#输入描述" class="headerlink" title="输入描述"></a>输入描述</h3><ul>
-<li>op：operation code，机器指令的低6位，表示操作类型</li>
-<li>func3：function field 3bits，来源于机器指令，用于控制具体功能</li>
-<li>func7_5：function field 7bits[5]，来源于机器指令第30位，用于控制具体功能</li>
-<li>Zero：接收来自ALU的Zero Flag，用于表示ALU的两个输入相等，用于 <code>beq</code> 等指令</li>
-</ul>
-<h2 id="指令集RV32I"><a href="#指令集RV32I" class="headerlink" title="指令集RV32I"></a>指令集RV32I</h2><p>RV32I 包含共40条指令，格式如下图所示。</p>
-<p>注意采用了相同opcode出现在一起的排列顺序。</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/image-20240407162246942.png"
-                      alt="image-20240407162246942"
-                ></p>
-<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><p>寄存器x0-x31为32个通用寄存器，位宽为32位，其中x0硬件接地，所有位强制为0</p>
-<p>除通用寄存器以外，还有程序计数器pc，始终指向待执行指令的地址</p>
-<p>栈指针和返回地址不使用专用寄存器，而是根据编程惯例使用固定的通用寄存器</p>
-<h2 id="指令格式"><a href="#指令格式" class="headerlink" title="指令格式"></a>指令格式</h2><p>为方便解码，其中两种源寄存器rs1，rs2与目的寄存器rd的位置都是不变的，且后7位固定为操作码。func3与func7的位置也固定。</p>
-<blockquote>
-<p>In the base RV32I ISA, there are four core instruction formats (R&#x2F;I&#x2F;S&#x2F;U). The RISC-V ISA keeps the source (rs1 and rs2) and destination (rd) registers at the same position in all formats to simplify decoding.</p>
-</blockquote>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/image-20240407152301642.png"
-                      alt="image-20240407152301642"
-                ></p>
-<h2 id="立即数扩展格式"><a href="#立即数扩展格式" class="headerlink" title="立即数扩展格式"></a>立即数扩展格式</h2><p><strong>因为立即数有5种扩展方式，因此将教科书上的ImmExt信号线ImmSrc改为3位</strong></p>
-<blockquote>
-<p>Except for the 5-bit immediates used in CSR instruction, immediates are always sign-extended, and are generally packed towards the leftmost available bits in the instruction and have been allocated to reduce hardware complexity. In particular, the sign bit for all immediates is always in bit 31 of the instruction to speed sign-extension circuitry.</p>
-</blockquote>
-<p>下面给出各指令类型中Immediate的扩展方式：</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/image-20240407153111883.png"
-                      alt="image-20240407153111883"
-                ></p>
-<h2 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h2><p>通过Memory Map分为Instruction Memory和Data Memory。</p>
-<h3 id="输入描述-1"><a href="#输入描述-1" class="headerlink" title="输入描述"></a>输入描述</h3><ul>
-<li>WE：Write Enable，写使能</li>
-<li>WD：Write Data，写入数据</li>
-<li>A：address，地址</li>
-</ul>
-<h3 id="输出描述-1"><a href="#输出描述-1" class="headerlink" title="输出描述"></a>输出描述</h3><ul>
-<li>RD：Read Data，读出数据</li>
-</ul>
-<h3 id="功能描述"><a href="#功能描述" class="headerlink" title="功能描述"></a>功能描述</h3><ul>
-<li>读出为组合逻辑，不受时钟影响</li>
-<li>写入在时钟上升沿发生</li>
-</ul>
-<h2 id="Register-File"><a href="#Register-File" class="headerlink" title="Register File"></a>Register File</h2><p>通用寄存器，支持读寄存器与写寄存器操作</p>
-<h3 id="输入描述-2"><a href="#输入描述-2" class="headerlink" title="输入描述"></a>输入描述</h3><ul>
-<li>A1，A2，A3：Address，地址1，地址2，地址3</li>
-<li>WD3：Write Data，写入数据，写使能有效时在下个时钟上升沿将其中数据写入A3所指的寄存器</li>
-<li>WE3：Write Enable，写使能</li>
-</ul>
-<h3 id="输出描述-2"><a href="#输出描述-2" class="headerlink" title="输出描述"></a>输出描述</h3><ul>
-<li>RD1，RD2：Read Data，分别读出A1，A2所指寄存器的内容</li>
-</ul>
-<h3 id="功能描述-1"><a href="#功能描述-1" class="headerlink" title="功能描述"></a>功能描述</h3><ul>
-<li>32个32位寄存器x0-x31，其中x0固定接地</li>
-<li>读出为组合逻辑，不受时钟影响</li>
-<li>写入在时钟上升沿发生</li>
-</ul>
-<h2 id="PC组件"><a href="#PC组件" class="headerlink" title="PC组件"></a>PC组件</h2><p>用于计算下一个需要执行的指令所在地址。</p>
-<h3 id="功能描述-2"><a href="#功能描述-2" class="headerlink" title="功能描述"></a>功能描述</h3><p>PC需要处理自增4（顺序执行）或offset跳转，因此PCNext由multiplexer从这两种情况中选择，multiplexer的控制信号由control unit发出，自增单独使用加法器实现，Immediate offset在imminent extend之后单独使用加法器实现。</p>
-<h3 id="jal指令"><a href="#jal指令" class="headerlink" title="jal指令"></a>jal指令</h3><p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="/images/image-20240407123648934.png"
-                     
-                ></p>
-<p>由于 <code>jal</code> 指令需要在改变PCNext（通过offset）的同时写入 <code>ra</code> ，故增加return address（PC+4）写入register 的通路。</p>
-<h2 id="ALU"><a href="#ALU" class="headerlink" title="ALU"></a>ALU</h2><p> 纯组合逻辑计算器</p>
-<h3 id="输入描述-3"><a href="#输入描述-3" class="headerlink" title="输入描述"></a>输入描述</h3><ul>
-<li>SrcA，SrcB：Source，两个ALU oprands</li>
-<li>ALUControl：ALU控制信号，控制ALU的具体功能</li>
-</ul>
-<h3 id="输出描述-3"><a href="#输出描述-3" class="headerlink" title="输出描述"></a>输出描述</h3><ul>
-<li>ALUResult：ALU运算结果</li>
-<li>Zero：Zero Flag，表示运算结果为0，通常用于判断输入是否相等</li>
-</ul>
-<h3 id="功能描述-3"><a href="#功能描述-3" class="headerlink" title="功能描述"></a>功能描述</h3><p>接收两位的控制信号，对Source进行运算</p>
-<h2 id="Immediate-Extend"><a href="#Immediate-Extend" class="headerlink" title="Immediate Extend"></a>Immediate Extend</h2><p>立即数扩展器</p>
-<h3 id="输入描述-4"><a href="#输入描述-4" class="headerlink" title="输入描述"></a>输入描述</h3><ul>
-<li>ImmSrc：Immediate Source，决定立即数分布格式，&#x3D;&#x3D;因为立即数有5种扩展方式，因此将教科书上的ImmExt信号线ImmSrc改为3位&#x3D;&#x3D;</li>
-<li>Imm：待扩展立即数和一些无关信息</li>
-</ul>
-<h3 id="输出描述-4"><a href="#输出描述-4" class="headerlink" title="输出描述"></a>输出描述</h3><ul>
-<li>ImmExt：Immediate Extended，扩展后的立即数</li>
-</ul>
+            <p>文档参考：<a class="link"   target="_blank" rel="noopener" href="http://www.cs.cmu.edu/~ralf/files.html" >Ralf Brown’s Files (cmu.edu) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>代码参考：<a class="link"   target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/583471633?utm_id=0" >显示方式与字符输出 - 知乎 (zhihu.com) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>实验参考与部分代码资源获取：<a class="link"   target="_blank" rel="noopener" href="https://jyywiki.cn/OS/2024/lect3.md" >Yanyan’s Wiki (jyywiki.cn) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>技术支持：<a class="link"   target="_blank" rel="noopener" href="https://yiyan.baidu.com/" >文心一言 (baidu.com) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="实验环境的配置"><a href="#实验环境的配置" class="headerlink" title="实验环境的配置"></a>实验环境的配置</h3><ol>
+<li>安装QEMU模拟硬件和行为 <code>sudo apt install qemu-system-x86</code> （QEMU使用的是SeaBIOS）</li>
+<li>获取jyy os课的实验代码 <code>wget -r -np -nH --cut-dirs=2 -R &quot;index.html*&quot; &quot;https://jyywiki.cn/os-demos/introduction/debug-firmware/&quot;</code> </li>
+<li>获取16位x86汇编的汇编器NASM用于制作img文件 <code> sudo apt install nasm</code></li>
+</ol>
+<h3 id="背景：BIOS中断"><a href="#背景：BIOS中断" class="headerlink" title="背景：BIOS中断"></a>背景：BIOS中断</h3><p>在有固件没有os的环境下，想要实现屏幕控制可以通过BIOS中断达成，具体方式位（汇编指令）<code>int &lt;code&gt;</code> ，其中code表示具体的中断类型。在执行这个指令后，BIOS将根据某些特定寄存器中的值来完成对应功能。</p>
+<h3 id="需要的中断功能"><a href="#需要的中断功能" class="headerlink" title="需要的中断功能"></a>需要的中断功能</h3><p>首先进入视频输出中的彩色文本模式（<code>ax=0x0003</code>）</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">INT 10 - VIDEO - SET VIDEO MODE</span><br><span class="line">	AH = 00h</span><br><span class="line">	AL = desired video mode (see #00010)</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">(Table 00010)</span><br><span class="line">Values for video mode:</span><br><span class="line">     text/ text pixel	pixel	colors disply scrn  system</span><br><span class="line">     grph resol	 box  resolution       pages  addr</span><br><span class="line"> 	...</span><br><span class="line"> 03h = T  80x25	 8x8   640x200	 16	  4   B800 CGA,PCjr,Tandy</span><br><span class="line">     = T  80x25	 8x14  640x350	 16/64	  8   B800 EGA</span><br><span class="line">     = T  80x25	 8x16  640x400	 16	  8   B800 MCGA</span><br><span class="line">     = T  80x25	 9x16  720x400	 16	  8   B800 VGA</span><br><span class="line">     = T  80x43	 8x8   640x350	 16	  4   B800 EGA,VGA [17]</span><br><span class="line">     = T  80x50	 8x8   640x400	 16	  4   B800 VGA [17]</span><br><span class="line"> 04h = G  40x25	 8x8   320x200	  4	  .   B800 CGA,PCjr,EGA,MCGA,VGA</span><br><span class="line"> 05h = G  40x25	 8x8   320x200	 4gray	  .   B800 CGA,PCjr,EGA</span><br><span class="line">     = G  40x25	 8x8   320x200	  4	  .   B800 MCGA,VGA</span><br><span class="line"> 06h = G  80x25	 8x8   640x200	  2	  .   B800 CGA,PCjr,EGA,MCGA,VGA</span><br><span class="line">     = G  80x25	  .	  .	mono	  .   B000 HERCULES.COM on HGC [14]</span><br><span class="line"> 07h = T  80x25	 9x14  720x350	mono	 var  B000 MDA,Hercules,EGA</span><br><span class="line">     = T  80x25	 9x16  720x400	mono	  .   B000 VGA</span><br><span class="line">     ...</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov ax, 0003h</span><br><span class="line">int 10h</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>以下给出的是清空屏幕（将屏幕向上滑动）的方法，我们要在打印字符之前先将屏幕清空</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">INT 10 - VIDEO - SCROLL UP WINDOW</span><br><span class="line">	AH = 06h</span><br><span class="line">	AL = number of lines by which to scroll up (00h = clear entire window)</span><br><span class="line">	BH = attribute used to write blank lines at bottom of window</span><br><span class="line">	CH,CL = row,column of window&#x27;s upper left corner</span><br><span class="line">	DH,DL = row,column of window&#x27;s lower right corner</span><br><span class="line">Return: nothing</span><br><span class="line">Note:	affects only the currently active page (see AH=05h)</span><br><span class="line">BUGS:	some implementations (including the original IBM PC) have a bug which</span><br><span class="line">	  destroys BP</span><br><span class="line">	the Trident TVGA8900CL (BIOS dated 1992/9/8) clears DS to 0000h when</span><br><span class="line">	  scrolling in an SVGA mode (800x600 or higher)</span><br><span class="line">SeeAlso: AH=07h,AH=12h&quot;Tandy 2000&quot;,AH=72h,AH=73h,AX=7F07h,INT 50/AX=0014h</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov ax, 0600h</span><br><span class="line">mov cx, 0;设置（待清屏窗口）的左上角坐标</span><br><span class="line">mov dx, 184fh;设置（待清屏窗口）的右下角坐标</span><br><span class="line">int 10h</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>以下给出的是设置光标的部分，在这里我们将光标置于左上角（0，0）处</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">INT 10 - VIDEO - SET CURSOR POSITION</span><br><span class="line">	AH = 02h</span><br><span class="line">	BH = page number</span><br><span class="line">	    0-3 in modes 2&amp;3</span><br><span class="line">	    0-7 in modes 0&amp;1</span><br><span class="line">	    0 in graphics modes</span><br><span class="line">	DH = row (00h is top)</span><br><span class="line">	DL = column (00h is left)</span><br><span class="line">Return: nothing</span><br><span class="line">SeeAlso: AH=03h,AH=05h,INT 60/DI=030Bh,MEM 0040h:0050h</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov ax, 0200h;设置光标在左上角</span><br><span class="line">mov dx, 0</span><br><span class="line">mov bh, 0</span><br><span class="line">int 10h</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov ax, 0200h;光标右移1</span><br><span class="line">inc dx</span><br><span class="line">int 10h</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>以下是打印带颜色和背景颜色，与不带颜色的字符的方法：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">INT 10 - VIDEO - WRITE CHARACTER AND ATTRIBUTE AT CURSOR POSITION</span><br><span class="line">	AH = 09h</span><br><span class="line">	AL = character to display</span><br><span class="line">	BH = page number (00h to number of pages - 1) (see #00010)</span><br><span class="line">	    background color in 256-color graphics modes (ET4000)</span><br><span class="line">	BL = attribute (text mode) or color (graphics mode)</span><br><span class="line">	    if bit 7 set in &lt;256-color graphics mode, character is XOR&#x27;ed</span><br><span class="line">	      onto screen</span><br><span class="line">	CX = number of times to write character</span><br><span class="line">Return: nothing</span><br><span class="line">Notes:	all characters are displayed, including CR, LF, and BS</span><br><span class="line">	replication count in CX may produce an unpredictable result in graphics</span><br><span class="line">	  modes if it is greater than the number of positions remaining in the</span><br><span class="line">	  current row</span><br><span class="line">	With PhysTechSoft&#x27;s PTS ROM-DOS the BH, BL, and CX values are ignored</span><br><span class="line">	  on entry.</span><br><span class="line">SeeAlso: AH=08h,AH=0Ah,AH=4Bh&quot;GRAFIX&quot;,INT 17/AH=60h,INT 1F&quot;SYSTEM DATA&quot;</span><br><span class="line">SeeAlso: INT 43&quot;VIDEO DATA&quot;,INT 44&quot;VIDEO DATA&quot;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">INT 10 - VIDEO - WRITE CHARACTER ONLY AT CURSOR POSITION</span><br><span class="line">	AH = 0Ah</span><br><span class="line">	AL = character to display</span><br><span class="line">	BH = page number (00h to number of pages - 1) (see #00010)</span><br><span class="line">	    background color in 256-color graphics modes (ET4000)</span><br><span class="line">	BL = attribute (PCjr, Tandy 1000 only) or color (graphics mode)</span><br><span class="line">	    if bit 7 set in &lt;256-color graphics mode, character is XOR&#x27;ed</span><br><span class="line">	      onto screen</span><br><span class="line">	CX = number of times to write character</span><br><span class="line">Return: nothing</span><br><span class="line">Notes:	all characters are displayed, including CR, LF, and BS</span><br><span class="line">	replication count in CX may produce an unpredictable result in graphics</span><br><span class="line">	  modes if it is greater than the number of positions remaining in the</span><br><span class="line">	  current row</span><br><span class="line">	With PhysTechSoft&#x27;s PTS ROM-DOS the BH and CX values are ignored</span><br><span class="line">	  on entry.</span><br><span class="line">SeeAlso: AH=08h,AH=09h,AH=11h&quot;Tandy 2000&quot;,AH=4Bh,INT 17/AH=60h</span><br><span class="line">SeeAlso: INT 1F&quot;SYSTEM DATA&quot;,INT 43&quot;VIDEO DATA&quot;,INT 44&quot;VIDEO DATA&quot;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov ax, 0A41h</span><br><span class="line">mov cx, 0003h</span><br><span class="line">int 10h</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>最终的汇编代码保存在<a class="link"   target="_blank" rel="noopener" href="https://github.com/kilohela/syslabs/blob/main/hello.s" >这里 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="Makefile文件"><a href="#Makefile文件" class="headerlink" title="Makefile文件"></a>Makefile文件</h3><div class="highlight-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">all:</span></span><br><span class="line">	nasm -o hello.img hello.s</span><br><span class="line">	</span><br><span class="line"><span class="section">run: hello.img</span></span><br><span class="line">	qemu-system-x86_64 -monitor stdio <span class="variable">$&lt;</span></span><br><span class="line">	</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -f hello.img</span><br></pre></td></tr></table></figure></div>
+
+<p>这样就可以快乐 <code>make</code> 和 <code>make run</code> 了，我们看到Hello World!输出，实验成功。</p>
 
         </div>
 
@@ -441,18 +364,18 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>Title:</strong> RISC-V处理器设计(1)</li>
+        <li><strong>Title:</strong> 通过BIOS中断在SeaBIOS上输出字符串</li>
         <li><strong>Author:</strong> Hela</li>
         <li><strong>Created at
-                :</strong> 2024-04-25 22:50:27</li>
+                :</strong> 2024-05-02 20:42:43</li>
         
             <li>
                 <strong>Updated at
-                    :</strong> 2024-05-01 13:00:27
+                    :</strong> 2024-05-02 20:44:56
             </li>
         
         <li>
-            <strong>Link:</strong> http://kilohela.github.io/2024/04/25/micro-arch/
+            <strong>Link:</strong> http://kilohela.github.io/2024/05/02/lab1/
         </li>
         <li>
             <strong>
@@ -473,11 +396,11 @@
             <ul class="post-tags-box">
                 
                     <li class="tag-item">
-                        <a href="/tags/RISC-V/">#RISC-V</a>&nbsp;
+                        <a href="/tags/x86/">#x86</a>&nbsp;
                     </li>
                 
                     <li class="tag-item">
-                        <a href="/tags/%E8%AE%A1%E7%BB%84/">#计组</a>&nbsp;
+                        <a href="/tags/%E5%AE%9E%E9%AA%8C/">#实验</a>&nbsp;
                     </li>
                 
             </ul>
@@ -488,29 +411,14 @@
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                        rel="prev"
-                        href="/2024/05/02/lab1/"
-                        >
-                            <span class="left arrow-icon flex justify-center items-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">通过BIOS中断在SeaBIOS上输出字符串</span>
-                                <span class="post-nav-item">Prev posts</span>
-                            </span>
-                        </a>
-                    </div>
-                
                 
                     <div class="article-next">
                         <a class="next"
                         rel="next"
-                        href="/2023/10/01/RISC-V-2/"
+                        href="/2024/04/25/micro-arch/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">RISC-V 指令的执行</span>
+                                <span class="post-nav-title-item">RISC-V处理器设计(1)</span>
                                 <span class="post-nav-item">Next posts</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -531,8 +439,8 @@
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">On this page</div>
-        <div class="page-title">RISC-V处理器设计(1)</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%AE%BE%E8%AE%A1%E7%BB%93%E6%9E%84"><span class="nav-text">参考设计结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E4%BD%93%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0"><span class="nav-text">总体功能描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%92%9F%E5%89%8D"><span class="nav-text">时钟前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%92%9F%E4%B8%8A%E5%8D%87%E6%B2%BF%EF%BC%9A%E7%8A%B6%E6%80%81%E6%9B%B4%E6%96%B0"><span class="nav-text">时钟上升沿：状态更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Control-Unit"><span class="nav-text">Control Unit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0"><span class="nav-text">输入描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86RV32I"><span class="nav-text">指令集RV32I</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">寄存器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-text">指令格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E6%95%B0%E6%89%A9%E5%B1%95%E6%A0%BC%E5%BC%8F"><span class="nav-text">立即数扩展格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory"><span class="nav-text">Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0"><span class="nav-text">功能描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Register-File"><span class="nav-text">Register File</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0-1"><span class="nav-text">功能描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PC%E7%BB%84%E4%BB%B6"><span class="nav-text">PC组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0-2"><span class="nav-text">功能描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jal%E6%8C%87%E4%BB%A4"><span class="nav-text">jal指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ALU"><span class="nav-text">ALU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">输出描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0-3"><span class="nav-text">功能描述</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Immediate-Extend"><span class="nav-text">Immediate Extend</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8F%8F%E8%BF%B0-4"><span class="nav-text">输入描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%8F%8F%E8%BF%B0-4"><span class="nav-text">输出描述</span></a></li></ol></li></ol>
+        <div class="page-title">通过BIOS中断在SeaBIOS上输出字符串</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-text">实验环境的配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%EF%BC%9ABIOS%E4%B8%AD%E6%96%AD"><span class="nav-text">背景：BIOS中断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E7%9A%84%E4%B8%AD%E6%96%AD%E5%8A%9F%E8%83%BD"><span class="nav-text">需要的中断功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Makefile%E6%96%87%E4%BB%B6"><span class="nav-text">Makefile文件</span></a></li></ol>
 
     </div>
 </div>
