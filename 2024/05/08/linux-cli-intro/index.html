@@ -26,7 +26,7 @@
 <meta property="og:description" content="这里是linux基础，用于快速入门命令行界面，可以先移步附录查看环境配置 1. 命令行基础手册：RTFM really helps. 使用 man 指令可以获取一个指令（或工具&#x2F;函数）的手册。让我们从 man man 开始。 命令行常用命令有：ls, rm, rmdir, makedir, cd, mv, cp, cat, echo, sudo 等，功能请自行查阅手册. 1.1 流与重定">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-05-08T03:10:44.000Z">
-<meta property="article:modified_time" content="2024-05-08T03:19:40.330Z">
+<meta property="article:modified_time" content="2024-05-30T12:43:15.310Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
@@ -267,8 +267,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-05-08 11:19:40</span>
-            <span class="mobile">2024-05-08 11:19:40</span>
+            <span class="desktop">2024-05-30 20:43:15</span>
+            <span class="mobile">2024-05-30 20:43:15</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -334,8 +334,8 @@
 <p>因此可以断定，中断信号的发出与处理是解释器的行为而非程序代码的行为，这有点类似与同步电路中的异步信号。（<strong>我们要特别考虑这些异步信号，因为它可能使程序进入非法状态</strong>）</p>
 <p>再试着按下Ctrl+ \，观察到程序退出了，这是因为发送了SIGQUIT信号，而我们的程序中并没有对这个信号进行特殊处理，因此按默认功能退出。同理，<code>kill</code> 指令会生成 <code>SIGTERM</code> 信号，而这个信号同样可以被程序捕获，而做出相应的行为。</p>
 <p>使用SIGKILL信号（由 <code>kill -9</code> 生成）可以强制退出程序，因为这个信号并不能被程序捕获，它直接由操作系统中止程序并不给任何保存文件的机会。<strong>注意这会留下孤儿进程</strong>。</p>
-<h2 id="2-程序的编译、运行与调试"><a href="#2-程序的编译、运行与调试" class="headerlink" title="2. 程序的编译、运行与调试"></a>2. 程序的编译、运行与调试</h2><h3 id="2-1-Hello-World"><a href="#2-1-Hello-World" class="headerlink" title="2.1 Hello World"></a>2.1 Hello World</h3><p>工具：<code>gcc, gdb, hexdump, hexedit </code> </p>
-<p>编写一个 <code>hello.c</code> 并使用 <code>gcc</code> 编译，在命令行中运行，再用hexdump反汇编 <code>./a.out</code> 得到其汇编代码，并用hexedit进行修改。</p>
+<h2 id="2-程序的编译、运行与调试"><a href="#2-程序的编译、运行与调试" class="headerlink" title="2. 程序的编译、运行与调试"></a>2. 程序的编译、运行与调试</h2><h3 id="2-1-Hello-World"><a href="#2-1-Hello-World" class="headerlink" title="2.1 Hello World"></a>2.1 Hello World</h3><p>工具：<code>gcc, gdb, objdump, hexedit </code> </p>
+<p>编写一个 <code>hello.c</code> 并使用 <code>gcc</code> 编译，在命令行中运行，再用objdump反汇编 <code>./a.out</code> 得到其汇编代码，并用hexedit进行修改。</p>
 <h3 id="2-2-程序的命令行参数"><a href="#2-2-程序的命令行参数" class="headerlink" title="2.2 程序的命令行参数"></a>2.2 程序的命令行参数</h3><p>程序是可以接受命令行参数的，就像我们使用的命令那样。我们需要在C语言中做如下处理：</p>
 <p><code>int main(int argc, char *argv[]) &#123;...</code> </p>
 <ol>
@@ -426,12 +426,13 @@
 </ul>
 <h3 id="4-5-git远程仓库"><a href="#4-5-git远程仓库" class="headerlink" title="4.5 git远程仓库"></a>4.5 git远程仓库</h3><ul>
 <li>获取远程仓库的副本，并用其初始化本地仓库 <code>git clone</code> </li>
+<li>连接本地项目至远程仓库 <code>git remote add</code> </li>
 <li>推送本地更改到远程仓库 <code>git push</code> </li>
 <li>查看所有该项目的远程仓库 <code>git remote</code> </li>
 <li>将远程仓库的更新同步至本地 <code>git fetch</code></li>
 </ul>
 <h3 id="4-6-一些惯例"><a href="#4-6-一些惯例" class="headerlink" title="4.6 一些惯例"></a>4.6 一些惯例</h3><ul>
-<li>master：代码中的主开发分支，通常意味着最新版本，可以视为指向最后一次提交的指针</li>
+<li>master：代码中的主开发分支，通常意味着最新版本，可以视为指向最后一次提交的指针，有时候也为main</li>
 <li>HEAD：特殊引用，指向正在查看的提交</li>
 <li>origin：如果只有一个远程仓库，那么通常叫origin</li>
 </ul>
@@ -503,7 +504,7 @@
         
             <li>
                 <strong>Updated at
-                    :</strong> 2024-05-08 11:19:40
+                    :</strong> 2024-05-30 20:43:15
             </li>
         
         <li>
@@ -538,6 +539,21 @@
 
         
             <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2024/05/31/AdvancedC/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">C语言进阶</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next">
