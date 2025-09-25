@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Hela">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://blog.anemo.cc/2024/05/08/linux-cli-intro/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="这是什么？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="命令行入门(linux)">
+<meta property="og:url" content="http://blog.anemo.cc/2024/05/08/linux-cli-intro/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="这是什么？">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://blog.anemo.cc/images/redefine-og.webp">
+<meta property="article:published_time" content="2024-05-08T03:10:44.000Z">
+<meta property="article:modified_time" content="2025-09-24T08:22:30.722Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.anemo.cc/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/azuki.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/azuki.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/azuki.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            命令行入门(linux) | Hela&#39;s blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"blog.anemo.cc","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"simple","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"这是什么？"},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/130136856_p0.jpg","dark":"/images/114843997_p1.png"},"title":"Mens agitat molem","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#464b51","dark":"#ffffff"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":"https://github.com/kilohela","instagram":null,"zhihu":null,"twitter":null,"email":"kilohela@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":5},"tags":{"enable":true,"limit":5}},"footerStart":"2023/9/17 11:05:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Hela&#39;s blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">2</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">9</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">命令行入门(linux)</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/azuki.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Hela</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-05-08 11:10:44</span>
+        <span class="mobile">2024-05-08 11:10:44</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-09-24 16:22:30</span>
+            <span class="mobile">2025-09-24 16:22:30</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/linux/">linux</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>这里是linux基础，用于快速入门命令行界面，可以先移步附录查看环境配置</p>
+<h2 id="1-命令行基础"><a href="#1-命令行基础" class="headerlink" title="1. 命令行基础"></a>1. 命令行基础</h2><p>手册：RTFM really helps. 使用 <code>man</code> 指令可以获取一个指令（或工具&#x2F;函数）的手册。让我们从 <code>man man</code> 开始。</p>
+<p>命令行常用命令有：<code>ls, rm, rmdir, makedir, cd, mv, cp, cat, echo, sudo</code> 等，功能请自行查阅手册.</p>
+<h3 id="1-1-流与重定向、管道"><a href="#1-1-流与重定向、管道" class="headerlink" title="1.1 流与重定向、管道"></a>1.1 流与重定向、管道</h3><p><code>&lt;, &gt;, |, 2&gt; </code></p>
+<p>程序通常获取stdin（键盘到shell的输入）作为输入，stdout（打印到shell）作为输出。这些输入输出通常为文本流（即字节序列），而我们可以改变这些流的方向（即<strong>重定向</strong>），例如将某个程序的输出保存到文件：<code>echo hello &gt; hello.txt</code> ，或者从某个文件获得输入: <code>./a.out &lt; test.txt</code>。另外我们可以使用 <code>2&gt;</code> 将标准错误（stderr）重定向到文件。</p>
+<p><strong>管道</strong>是将一个程序的输出衔接到另一个程序的输入（形成一个buffer，一个程序往里面写值，另一个程序从里面读值）</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yes &quot;qwqwqwq&quot; | lolcat </span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="1-2-文件与伪文件系统"><a href="#1-2-文件与伪文件系统" class="headerlink" title="1.2 文件与伪文件系统"></a>1.2 文件与伪文件系统</h3><p><code>ls -al</code> 显示所有文件及其权限（通常的 <code>ls</code> 命令会隐藏以 <code>.</code> 开头的文件）</p>
+<p>在linux系统中，everything is file， 我们使用ls看到的目录、链接也是file的一种。如果没用目录文件的执行（x）权限，就无法对目录中的内容进行搜索（即无法索引），那么就找不到目录下的文件了，在这种情况下，即使该目录下的文件有读写或执行权限，也无法进行对应操作。</p>
+<p>在根目录下，有部分文件不是与硬盘中的文件系统一一对应的，而是linux为了方便程序与系统的交互而设计的API，如获取并更改系统设置、查看进程、查看CPU信息等。例如 <code>/proc/</code> 目录下存放当前所有进程的信息，这样我们就可以方便地与系统完成更好的交互。例如我们可以编写一个程序，通过读伪文件中的信息来打印当前的进程树、CPU状态等。</p>
+<h3 id="1-3-进程"><a href="#1-3-进程" class="headerlink" title="1.3 进程"></a>1.3 进程</h3><p><code>ps, pstree, pidof, kill, jobs, &amp;, bg, kill, nohup</code></p>
+<p>命令行支持后台运行程序。我们先用python写一些长时间sleep的程序，并在命令结尾处加入 &amp; 符号：<code>python3 sleep.py &amp;</code> 。这样，sleep程序就在后台运行了，我们还可以通过Ctrl-z来切换程序到后台<strong>并暂停执行</strong>，而nohup命令可以在退出shell后让命令保持执行。</p>
+<p>如果需要知道当前的shell下有哪些后台进程，可以使用 <code>jobs</code> 命令，具体进程操作请查看相应手册。</p>
+<p>除shell之外，可以通过 <code>ps</code> 打印当前系统运行的多数进程信息， <code>pstree</code> 可以将这些进程以树的形式排列（被一个进程启动的称为这个进程的子进程）。kill命令可以给进程发送中止信息，或设置相应参数直接由操作系统中止进程（<strong>该操作为危险操作</strong>）。</p>
+<h3 id="1-4-信号机制"><a href="#1-4-信号机制" class="headerlink" title="1.4 信号机制"></a>1.4 信号机制</h3><p><a class="link"   target="_blank" rel="noopener" href="https://www.man7.org/linux/man-pages/man7/signal.7.html" >signal(7) - Linux manual page (man7.org)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p>我们可以写一个sigint.py来检测Ctrl+C对程序的中断机制（例如为什么退出不了vim）</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> signal, time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">handler</span>(<span class="params">signum, time</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\nI got a SIGINT, but I am not stopping&quot;</span>)</span><br><span class="line"></span><br><span class="line">signal.signal(signal.SIGINT, handler)</span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    time.sleep(<span class="number">.1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;\r&#123;&#125;&quot;</span>.<span class="built_in">format</span>(i), end=<span class="string">&quot;&quot;</span>)</span><br><span class="line">    i += <span class="number">1</span></span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><code>print(&quot;\r{}&quot;.format(i), end=&quot;&quot;)</code>: 这行代码打印计数器的值，但不换行（<code>\r</code>将光标移回行首）。<code>end=&quot;&quot;</code>确保<code>print</code>函数在打印后不会添加默认的换行符。这样，每次循环时，计数器都会在同一行上更新。</li>
+</ul>
+<p>我们可以看到，中断信号的处理并没有被写在循环内部，但在程序执行过程中，我们按下Ctrl+C，却得到了输出，并没有退出程序。</p>
+<p>因此可以断定，中断信号的发出与处理是解释器的行为而非程序代码的行为，这有点类似与同步电路中的异步信号。（<strong>我们要特别考虑这些异步信号，因为它可能使程序进入非法状态</strong>）</p>
+<p>再试着按下Ctrl+ \，观察到程序退出了，这是因为发送了SIGQUIT信号，而我们的程序中并没有对这个信号进行特殊处理，因此按默认功能退出。同理，<code>kill</code> 指令会生成 <code>SIGTERM</code> 信号，而这个信号同样可以被程序捕获，而做出相应的行为。</p>
+<p>使用SIGKILL信号（由 <code>kill -9</code> 生成）可以强制退出程序，因为这个信号并不能被程序捕获，它直接由操作系统中止程序并不给任何保存文件的机会。<strong>注意这会留下孤儿进程</strong>。</p>
+<h2 id="2-程序的编译、运行与调试"><a href="#2-程序的编译、运行与调试" class="headerlink" title="2. 程序的编译、运行与调试"></a>2. 程序的编译、运行与调试</h2><h3 id="2-1-Hello-World"><a href="#2-1-Hello-World" class="headerlink" title="2.1 Hello World"></a>2.1 Hello World</h3><p>工具：<code>gcc, gdb, objdump, hexedit </code> </p>
+<p>编写一个 <code>hello.c</code> 并使用 <code>gcc</code> 编译，在命令行中运行，再用objdump反汇编 <code>./a.out</code> 得到其汇编代码，并用hexedit进行修改。</p>
+<h3 id="2-2-程序的命令行参数"><a href="#2-2-程序的命令行参数" class="headerlink" title="2.2 程序的命令行参数"></a>2.2 程序的命令行参数</h3><p>程序是可以接受命令行参数的，就像我们使用的命令那样。我们需要在C语言中做如下处理：</p>
+<p><code>int main(int argc, char *argv[]) {...</code> </p>
+<ol>
+<li><code>argc</code><strong>（Argument Count）</strong><ul>
+<li>这是一个整数，表示传递给 <code>main</code> 函数的命令行参数的数量（包括程序名称本身）。</li>
+<li>通常，<code>argc</code> 的值至少为1，因为第一个参数（<code>argv[0]</code>）是程序的名称。</li>
+</ul>
+</li>
+<li><code>argv</code><strong>（Argument Vector）</strong><ul>
+<li>这是一个指向字符指针数组的指针，每个字符指针指向一个以null结尾的字符串（即C风格的字符串）。</li>
+<li><code>argv[0]</code> 通常是程序的名称。</li>
+<li><code>argv[1]</code> 到 <code>argv[argc-1]</code> 是传递给程序的命令行参数。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-3-编写一个带命令行参数的程序"><a href="#2-3-编写一个带命令行参数的程序" class="headerlink" title="2.3 编写一个带命令行参数的程序"></a>2.3 编写一个带命令行参数的程序</h3><p>我们写一个fxxk程序：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (argc == <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Error: too few arguments\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">2</span>)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Error: too many arguments\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> t;</span><br><span class="line">    <span class="built_in">sscanf</span>(argv[<span class="number">1</span>], <span class="string">&quot;%d&quot;</span>, &amp;t);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;t;i++)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;fuck!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>先编译：<code>gcc -o fuck fxxk.c</code> </p>
+<p>输入 <code>./fuck 3</code> ，查看程序执行结果，可以改变参数多次尝试。</p>
+<h3 id="2-4-观察程序的系统调用"><a href="#2-4-观察程序的系统调用" class="headerlink" title="2.4 观察程序的系统调用"></a>2.4 观察程序的系统调用</h3><p>我们知道程序只参与计算（即与自己的内存、寄存器互动），是个无情的状态机，那么程序是如何停止的？</p>
+<p>答案是，操作系统提供了一个接口：<strong>系统调用</strong>。系统调用是指令集中的一条指令。在执行这条指令时，系统的状态机将自身送给操作系统监管，操作系统将可能执行唤醒、结束、暂停进程等等一系列操作。</p>
+<p>通过 <code>strace</code> 指令可以观察程序的系统调用。例如 <code>strace ls &gt; /dev/null 2&gt; log</code>  ，strace的输出信息是默认发送到stderr的，因此我们使用 <code>2&gt;</code> 将其重定向到 log 文件查看，并将ls的标准输出丢弃。我们从log文件中可以看到execve, mmap, access, pread64, write等等linux的系统调用函数。通过追踪程序的系统调用，我们可以更加清楚地了解到程序的行为过程。编译hello.c并查看系统调用可以发现，即使是最简单的Hello world程序，都要经过与操作系统的多次交互才能完成执行。</p>
+<h3 id="2-5-PATH"><a href="#2-5-PATH" class="headerlink" title="2.5 PATH"></a>2.5 PATH</h3><p>所有的命令都是程序的运行。当我们在shell中敲下 <code>echo hello</code> 时，shell是如何启动 <code>echo</code> 并传入参数的？</p>
+<p>键入 <code>echo $PATH</code> 可以看到被 <code>:</code> 分隔的各个路径（fish中是用空格分隔）。这些路径表示了shell在运行命令时的搜索顺序。用 <code>mv</code> 指令将之前实现的<code>fuck</code> 的可执行文件移动到第一个路径下，这样我们可以直接将 <code>fuck</code> 当作命令使用。这样我们就知道了命令（程序）是如何被执行的。</p>
+<h3 id="2-6-使用gdb调试程序"><a href="#2-6-使用gdb调试程序" class="headerlink" title="2.6 使用gdb调试程序"></a>2.6 使用gdb调试程序</h3><p>在debug时，使用print大法是简便但是效率低下的，因此需要使用gdb完成程序的调试。调试前通常在Makefile文件中添加debug项并使用make启动以节省输入指令的时间。在使用gdb前，我们通常会使用 <code>gcc -g</code> 编译程序以留下源代码。用gdb运行程序，并layout src或其他信息以供参考。</p>
+<ul>
+<li><strong>list (l)</strong>: 显示源代码，默认显示接下来的10行。你可以指定一个函数名或行号来查看特定的代码。</li>
+<li><strong>break (b)</strong>: 设置断点。例如，<code>b main</code>会在<code>main</code>函数处设置一个断点。</li>
+<li><strong>run (r)</strong>: 运行程序，直到遇到断点或程序结束。</li>
+<li><strong>next (n)</strong>: 执行下一行代码，但不进入函数内部。</li>
+<li><strong>step (s)</strong>: 执行下一行代码，如果下一行是函数调用，则进入该函数。</li>
+<li><strong>continue (c)</strong>: 继续执行程序，直到遇到下一个断点或程序结束。</li>
+<li><strong>print (p)</strong>: 打印变量的值。例如，<code>p variable_name</code>。</li>
+<li><strong>info breakpoints (info b)</strong>: 列出所有的断点。</li>
+<li><strong>delete breakpoints (d)</strong>: 删除断点。例如，<code>d 1</code>会删除编号为1的断点。</li>
+<li><strong>quit (q)</strong>: 退出GDB。</li>
+</ul>
+<p>除了这些简便的操作以外，我们还可以编写调试脚本以提高调试效率。调试脚本的编写方法将在以后的博客中发布。</p>
+<h2 id="3-shell编程"><a href="#3-shell编程" class="headerlink" title="3. shell编程"></a>3. shell编程</h2><p><a class="link"   target="_blank" rel="noopener" href="https://missing.csail.mit.edu/2020/shell-tools/" >Shell Tools and Scripting · Missing Semester (mit.edu)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<h3 id="3-1-vim使用基础"><a href="#3-1-vim使用基础" class="headerlink" title="3.1 vim使用基础"></a>3.1 vim使用基础</h3><p><a class="link"   target="_blank" rel="noopener" href="https://vimhelp.org/" >Vim: help.txt (vimhelp.org)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>vim 被称为编辑器之神，在开始学习vim之前我们需要掌握几条简单的指令： <code>&lt;ESC&gt;, u, v, i, :q, :w, y, p</code> 有了这些基础指令，便可以进行愉快的玩耍了。 除了这些指令外，我们还需要知道vim有多种模式，一般在normal模式中完成各种模式的切换。</p>
+<h3 id="3-2-正则表达式"><a href="#3-2-正则表达式" class="headerlink" title="3.2 正则表达式"></a>3.2 正则表达式</h3><p>用来做字符串匹配非常有用</p>
+<p>教程： <a class="link"   target="_blank" rel="noopener" href="https://github.com/ziishaned/learn-regex/blob/master/translations/README-cn.md" >learn-regex&#x2F;translations&#x2F;README-cn.md at master · ziishaned&#x2F;learn-regex (github.com)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p>在线测试网站： <a class="link"   target="_blank" rel="noopener" href="https://regex101.com/" >regex101: build, test, and debug regex<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p>在线练习： <a class="link"   target="_blank" rel="noopener" href="https://regexone.com/" >RegexOne - Learn Regular Expressions<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<h3 id="3-3-使用脚本以提高效率"><a href="#3-3-使用脚本以提高效率" class="headerlink" title="3.3 使用脚本以提高效率"></a>3.3 使用脚本以提高效率</h3><p>make脚本：以后会在varilator仿真篇补上（咕咕咕）</p>
+<p>shell脚本：（以fish脚本为例，与bash语法稍有不同）</p>
+<ol>
+<li>创建脚本并编辑 <code>vim test.sh</code></li>
+<li>在脚本第一行写明要使用的解释器</li>
+<li>赋予脚本执行权限 <code>chmod +x your_script.fish</code></li>
+<li>执行脚本 <code>./your_script.fish</code></li>
+</ol>
+<div class="code-container" data-rel="Sh"><figure class="iseeu highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env fish  </span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 这是一个 fish 脚本示例  </span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 输出一条消息  </span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Hello, World! (from fish)&quot;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 使用 set 变量赋值  </span></span><br><span class="line"><span class="built_in">set</span> greeting <span class="string">&quot;Hello, Fish!&quot;</span>  </span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$greeting</span>  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 使用 for 循环  </span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> 1 2 3 4 5  </span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Number: <span class="variable">$i</span>&quot;</span>  </span><br><span class="line">end  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 使用 if 语句  </span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> <span class="variable">$USER</span> = <span class="string">&quot;yourusername&quot;</span>  </span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;You are the user!&quot;</span>  </span><br><span class="line"><span class="keyword">else</span>  </span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;You are not the user.&quot;</span>  </span><br><span class="line">end  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 使用函数  </span></span><br><span class="line"><span class="keyword">function</span> greet  </span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Greeting from the greet function: <span class="variable">$argv</span>&quot;</span>  </span><br><span class="line">end  </span><br><span class="line">  </span><br><span class="line">greet <span class="string">&quot;Hello, function!&quot;</span>  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 退出脚本，返回状态码 0  </span></span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="4-版本控制-git"><a href="#4-版本控制-git" class="headerlink" title="4. 版本控制(git)"></a>4. 版本控制(git)</h2><p>版本控制在项目管理和多人协作时非常有用</p>
+<p>一个很好的git intro：<a class="link"   target="_blank" rel="noopener" href="https://missing.csail.mit.edu/2020/version-control/" >Version Control (Git) · Missing Semester (mit.edu)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<h3 id="4-1-树形文件存储"><a href="#4-1-树形文件存储" class="headerlink" title="4.1 树形文件存储"></a>4.1 树形文件存储</h3><p>采用链接机制，文件夹（tree）和文件（blob），tree可以包含tree和blob。这些关系信息被以哈希值表示。</p>
+<ol>
+<li><strong>文件内容（Blob）</strong>：当你将文件添加到 Git 仓库时，Git 会计算该文件的 SHA-1 哈希值，并将文件内容存储为一个 blob 对象。这个 blob 对象由其内容及其对应的 SHA-1 哈希值唯一标识。</li>
+<li><strong>目录结构（Tree）</strong>：Git 使用树对象来表示目录结构。一个树对象包含了对其他树对象或 blob 对象的引用，以及这些对象在目录结构中的路径。每个树对象也有一个唯一的 SHA-1 哈希值。</li>
+<li><strong>提交（Commit）</strong>：一个提交对象包含了关于仓库当前状态的信息，包括一个指向根树对象的指针、一个指向父提交的指针（或多个指针，对于合并提交）、作者和提交者信息、提交消息等。每个提交也有一个唯一的 SHA-1 哈希值。</li>
+</ol>
+<h3 id="4-2-快照机制"><a href="#4-2-快照机制" class="headerlink" title="4.2 快照机制"></a>4.2 快照机制</h3><p>git使用快照（snapshot）来保存每个版本的提交，每个提交有一个或多个父提交（分支的合并）。而一个父提交也可能有多个子提交（分支）整个提交结构是一个有向无环图。</p>
+<h3 id="4-3-简单的git命令"><a href="#4-3-简单的git命令" class="headerlink" title="4.3 简单的git命令"></a>4.3 简单的git命令</h3><ul>
+<li>初始化仓库 <code>git init</code> </li>
+<li>添加文件到暂存区 <code>git add</code> </li>
+<li>查看修改内容 <code>git diff</code> </li>
+<li>查看暂存区 <code>git status</code> </li>
+<li>提交（暂存区）更改到HEAD指向的分支 <code>git commit</code> ，并写更改文档</li>
+<li>查看历史记录 <code>git log</code> </li>
+<li>回溯到某个快照 <code>git checkout</code> （<strong>这会导致未快照的本地文件被破坏</strong>）</li>
+</ul>
+<h3 id="4-4-分支与合并"><a href="#4-4-分支与合并" class="headerlink" title="4.4 分支与合并"></a>4.4 分支与合并</h3><ul>
+<li><p>查看所有分支 <code>git branch</code> </p>
+</li>
+<li><p>分支流程：</p>
+<ul>
+<li>在head处创建一个新的索引</li>
+<li>将head指向新的索引，这样提交时就默认更新head指向的这个索引</li>
+</ul>
+</li>
+<li><p>分支合并：<code>git merge, git mergetool</code> ，具体使用方法参考文档</p>
+</li>
+</ul>
+<h3 id="4-5-git远程仓库"><a href="#4-5-git远程仓库" class="headerlink" title="4.5 git远程仓库"></a>4.5 git远程仓库</h3><ul>
+<li>获取远程仓库的副本，并用其初始化本地仓库 <code>git clone</code> </li>
+<li>连接本地项目至远程仓库 <code>git remote add</code> </li>
+<li>推送本地更改到远程仓库 <code>git push</code> </li>
+<li>查看所有该项目的远程仓库 <code>git remote</code> </li>
+<li>将远程仓库的更新同步至本地 <code>git fetch</code></li>
+</ul>
+<h3 id="4-6-一些惯例"><a href="#4-6-一些惯例" class="headerlink" title="4.6 一些惯例"></a>4.6 一些惯例</h3><ul>
+<li>master：代码中的主开发分支，通常意味着最新版本，可以视为指向最后一次提交的指针，有时候也为main</li>
+<li>HEAD：特殊引用，指向正在查看的提交</li>
+<li>origin：如果只有一个远程仓库，那么通常叫origin</li>
+</ul>
+<h2 id="附录：基础环境配置"><a href="#附录：基础环境配置" class="headerlink" title="附录：基础环境配置"></a>附录：基础环境配置</h2><h3 id="安装Ubuntu22-04"><a href="#安装Ubuntu22-04" class="headerlink" title="安装Ubuntu22.04"></a>安装Ubuntu22.04</h3><p>先更新apt： <code>apt-get update</code> </p>
+<p>安装一些常用的工具，这里略过。</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">apt-get install build-essential    # build-essential packages, include binary utilities, gcc, make, and so on</span><br><span class="line">apt-get install man                # on-line reference manual</span><br><span class="line">apt-get install gcc-doc            # on-line reference manual for gcc</span><br><span class="line">apt-get install gdb                # GNU debugger</span><br><span class="line">apt-get install git                # revision control system</span><br><span class="line">apt-get install vim</span><br><span class="line">apt-get install curl</span><br><span class="line">apt-get install python3</span><br><span class="line">apt-get install libreadline-dev    # a library used later</span><br><span class="line">apt-get install libsdl2-dev        # a library used later</span><br><span class="line">apt-get install llvm llvm-dev      # llvm project, which contains libraries used later</span><br><span class="line">apt-get install llvm-11 llvm-11-dev # only for ubuntu20.04</span><br><span class="line">exit</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="配置fish"><a href="#配置fish" class="headerlink" title="配置fish"></a>配置fish</h3><ol>
+<li>安装fish：<code>sudo apt install fish</code> </li>
+<li>设置fish为默认shell：<code>chsh -s /usr/bin/fish</code></li>
+<li>重启</li>
+</ol>
+<h3 id="配置tmux"><a href="#配置tmux" class="headerlink" title="配置tmux"></a>配置tmux</h3><p><code>sudo apt install tmux</code></p>
+<p>设置启动fish时自动启动tmux：<code>vim ~/.config/fish/config.fish</code> 使用vim在fish的配置文件中添加以下代码：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if not set -q TMUX</span><br><span class="line">    exec tmux</span><br><span class="line">end</span><br></pre></td></tr></table></figure></div>
+
+<p>绑定唤醒快捷键为Ctrl-a：<code>vim ~/.tmux.conf</code> ，粘贴如下代码：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set -g prefix C-a  </span><br><span class="line">unbind C-b  </span><br><span class="line">bind C-a send-prefix</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="配置vim"><a href="#配置vim" class="headerlink" title="配置vim"></a>配置vim</h3><p>将vimrc文件粘贴到当前用户目录下（下面是我的vim配置）<code>cp /etc/vim/vimrc ~/.vimrc</code></p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&quot;-------------------------------------</span><br><span class="line">&quot; Tab</span><br><span class="line">&quot;-------------------------------------</span><br><span class="line">set tabstop=4</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set softtabstop=4</span><br><span class="line">set expandtab</span><br><span class="line">autocmd Filetype make setlocal noexpandtab</span><br><span class="line"></span><br><span class="line">&quot;-------------------------------------</span><br><span class="line">&quot; Bracket</span><br><span class="line">&quot;-------------------------------------</span><br><span class="line">inoremap ( ()&lt;ESC&gt;i</span><br><span class="line">inoremap [ []&lt;ESC&gt;i</span><br><span class="line">inoremap &#123; &#123;&#125;&lt;ESC&gt;i</span><br><span class="line">inoremap &lt; &lt;&gt;&lt;ESC&gt;i</span><br><span class="line">inoremap &#x27; &#x27;&#x27;&lt;ESC&gt;i</span><br><span class="line">inoremap &quot; &quot;&quot;&lt;ESC&gt;i</span><br><span class="line">nnoremap &lt;F2&gt; :setlocal paste&lt;CR&gt;i</span><br><span class="line">nnoremap &lt;F3&gt; :setlocal nopaste&lt;CR&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>其中tab项为设置tab缩进为4，自动将tab转化为4个空格，且在Makefile文件中禁用自动tab转化（可能引起兼容问题）</p>
+<p>Bracket项为括号自动匹配和粘贴模式不进行括号匹配（normal模式下按F2进入粘贴模式，F3退出粘贴模式）</p>
+<h3 id="启用中文输入法"><a href="#启用中文输入法" class="headerlink" title="启用中文输入法"></a>启用中文输入法</h3><ol>
+<li>Open Settings, go to <code>Region &amp; Language</code> -&gt; <code>Manage Installed Languages</code> -&gt; <code>Install / Remove languages</code>.</li>
+<li>Select <code>Chinese (Simplified)</code>. Make sure <code>Keyboard Input method system</code> has <code>Ibus</code> selected. Apply.</li>
+<li>Reboot (please don’t think “this isn’t necessary”, just do it or you will waste more precious time!)</li>
+<li>Log back in, reopen Settings, go to <code>Keyboard</code>.</li>
+<li>Click on the “+” sign under <code>Input sources</code>.</li>
+<li>Select <code>Chinese (China)</code> and then <code>Chinese (Intelligent Pinyin)</code>.</li>
+</ol>
+<h3 id="配置git"><a href="#配置git" class="headerlink" title="配置git"></a>配置git</h3><p>生成ssh key： <code>ssh-keygen -t rsa -b 4096 -C &quot;你的邮箱@example.com&quot;</code> ，按回车保存到默认路径</p>
+<p>生成后通过shared folder导出ssh公钥</p>
+<ol>
+<li>找到共享文件夹位置 <code>find / -name shared-folder 2&gt;/dev/null</code> </li>
+<li>将is_rsa.pub移动到共享文件夹，并粘贴其内容到github网页</li>
+</ol>
+<p>配置用户名和邮箱：<code>vim ~/.gitconfig</code> ，修改user部分。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[user]  </span><br><span class="line">    name = Your_Username  </span><br><span class="line">    email = Your_Email@example.com</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="使用alias以提高效率"><a href="#使用alias以提高效率" class="headerlink" title="使用alias以提高效率"></a>使用alias以提高效率</h3><p><strong>注意：fish的alias实现和bash不一样</strong>，bash语法为<code>alias q=&quot;exit&quot;</code> </p>
+<p>在shell中输入alias，只能在这次会话中生效，如果想要退出shell也持续生效，我们需要更改相应的配置文件：<code>vim ~/.config/fish/config.fish</code> </p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias ll &quot;ls -lah&quot;</span><br><span class="line">alias q &quot;exit&quot;</span><br><span class="line">alias c &quot;clear&quot;</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h3 id="一键配置脚本"><a href="#一键配置脚本" class="headerlink" title="一键配置脚本"></a>一键配置脚本</h3><p>配置这么多文件是繁琐的，因此我们可以使用符号链接以“快捷方式”将它们链接到一个特定的文件夹，这样我们就可以在github上保管这个文件夹，需要时仅需下载再创建链接即可。这里先咕咕咕了。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a class="link"   target="_blank" rel="noopener" href="https://askubuntu.com/questions/1408873/ubuntu-22-04-chinese-simplified-pinyin-input-support/1408874" >Ubuntu 22.04 Chinese (simplified) pinyin input support - Ask Ubuntu<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://vimhelp.org/" >Vim: help.txt (vimhelp.org)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://missing.csail.mit.edu/" >The Missing Semester of Your CS Education (mit.edu)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>  </p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/linux/">#linux</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2024/05/31/AdvancedC/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">C语言进阶</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2024/05/02/lab1/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">通过BIOS中断在SeaBIOS上输出字符串</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">命令行入门(linux)</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%9F%BA%E7%A1%80"><span class="nav-text">1. 命令行基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E6%B5%81%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91%E3%80%81%E7%AE%A1%E9%81%93"><span class="nav-text">1.1 流与重定向、管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E6%96%87%E4%BB%B6%E4%B8%8E%E4%BC%AA%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-text">1.2 文件与伪文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%BF%9B%E7%A8%8B"><span class="nav-text">1.3 进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E4%BF%A1%E5%8F%B7%E6%9C%BA%E5%88%B6"><span class="nav-text">1.4 信号机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E8%BF%90%E8%A1%8C%E4%B8%8E%E8%B0%83%E8%AF%95"><span class="nav-text">2. 程序的编译、运行与调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Hello-World"><span class="nav-text">2.1 Hello World</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="nav-text">2.2 程序的命令行参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AA%E5%B8%A6%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0%E7%9A%84%E7%A8%8B%E5%BA%8F"><span class="nav-text">2.3 编写一个带命令行参数的程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E8%A7%82%E5%AF%9F%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="nav-text">2.4 观察程序的系统调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-PATH"><span class="nav-text">2.5 PATH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-%E4%BD%BF%E7%94%A8gdb%E8%B0%83%E8%AF%95%E7%A8%8B%E5%BA%8F"><span class="nav-text">2.6 使用gdb调试程序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-shell%E7%BC%96%E7%A8%8B"><span class="nav-text">3. shell编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-vim%E4%BD%BF%E7%94%A8%E5%9F%BA%E7%A1%80"><span class="nav-text">3.1 vim使用基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">3.2 正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC%E4%BB%A5%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87"><span class="nav-text">3.3 使用脚本以提高效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6-git"><span class="nav-text">4. 版本控制(git)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E6%A0%91%E5%BD%A2%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8"><span class="nav-text">4.1 树形文件存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E5%BF%AB%E7%85%A7%E6%9C%BA%E5%88%B6"><span class="nav-text">4.2 快照机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%AE%80%E5%8D%95%E7%9A%84git%E5%91%BD%E4%BB%A4"><span class="nav-text">4.3 简单的git命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%88%86%E6%94%AF%E4%B8%8E%E5%90%88%E5%B9%B6"><span class="nav-text">4.4 分支与合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-git%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-text">4.5 git远程仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E4%B8%80%E4%BA%9B%E6%83%AF%E4%BE%8B"><span class="nav-text">4.6 一些惯例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-text">附录：基础环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Ubuntu22-04"><span class="nav-text">安装Ubuntu22.04</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEfish"><span class="nav-text">配置fish</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEtmux"><span class="nav-text">配置tmux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEvim"><span class="nav-text">配置vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E7%94%A8%E4%B8%AD%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95"><span class="nav-text">启用中文输入法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgit"><span class="nav-text">配置git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8alias%E4%BB%A5%E6%8F%90%E9%AB%98%E6%95%88%E7%8E%87"><span class="nav-text">使用alias以提高效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E9%94%AE%E9%85%8D%E7%BD%AE%E8%84%9A%E6%9C%AC"><span class="nav-text">一键配置脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2023</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Hela</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        9 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>

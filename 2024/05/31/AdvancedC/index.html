@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Hela">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://blog.anemo.cc/2024/05/31/advancedc/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="这是什么？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言进阶">
+<meta property="og:url" content="http://blog.anemo.cc/2024/05/31/AdvancedC/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="这是什么？">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://blog.anemo.cc/images/redefine-og.webp">
+<meta property="article:published_time" content="2024-05-31T08:27:01.000Z">
+<meta property="article:modified_time" content="2025-09-24T13:57:52.984Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="GNU make">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://blog.anemo.cc/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/azuki.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/azuki.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/azuki.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            C语言进阶 | Hela&#39;s blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"blog.anemo.cc","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"simple","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":false,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"这是什么？"},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/130136856_p0.jpg","dark":"/images/114843997_p1.png"},"title":"Mens agitat molem","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#464b51","dark":"#ffffff"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":"https://github.com/kilohela","instagram":null,"zhihu":null,"twitter":null,"email":"kilohela@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":5},"tags":{"enable":true,"limit":5}},"footerStart":"2023/9/17 11:05:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Hela&#39;s blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">2</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">9</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">C语言进阶</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/azuki.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Hela</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-05-31 16:27:01</span>
+        <span class="mobile">2024-05-31 16:27:01</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2025-09-24 21:57:52</span>
+            <span class="mobile">2025-09-24 21:57:52</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/C/">C</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/GNU-make/">GNU make</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>与之前发布的linux命令行基础类似，我基于自己的学习经历和感悟写了一篇针对C语言项目的进阶技巧。当然由于要覆盖到方方面面，无法叙述得详细深入。我在初次接触阅读源码（NEMU）时因为缺乏这样系统性的知识框架而走了很多弯路（每一个trick都要自己搜索功能并思考背后的编程理念）。正如数学证明虽然严谨，但很少有人将证明背后的完整思路透露出来，从而略显生硬。本文的目的是整理一些general的编程思想，并列举一部分使用例，以缓和源码阅读、编写项目的学习曲线。</p>
+<p>（小声BB：之前计划写这篇博客的时候还有复杂项目的管理、源码阅读技巧和自动化调试章节，但因为作者发现自己太菜半天憋不出来一个字，遂放弃。等作者能力达到了可能会更新相关内容，目前下一篇博客预计为verilator使用。）</p>
+<h2 id="一些通用的编程思想"><a href="#一些通用的编程思想" class="headerlink" title="一些通用的编程思想"></a>一些通用的编程思想</h2><p>通用、简单、去耦合（防御性编程、抽象层级隔离）、自动化（程序往往比人表现更好）</p>
+<h2 id="理清文件之间的依赖关系"><a href="#理清文件之间的依赖关系" class="headerlink" title="理清文件之间的依赖关系"></a>理清文件之间的依赖关系</h2><p>现代项目通常采取相互依赖的多文件系统构建。理清文件之间的依赖关系对于项目的成功执行、可维护性、可扩展性、团队协作以及故障处理等方面都具有重要的影响。因此，在项目中应该给予足够的重视并采取相应的措施来确保依赖关系的清晰和准确。本章节将从C语言的多文件功能开始阐述。</p>
+<h3 id="Include"><a href="#Include" class="headerlink" title="Include"></a>Include</h3><p>在C语言中，<code>#include</code> 是一个预处理指令，它在编译阶段之前处理源代码。这个指令的主要作用是将指定的文件内容插入到当前源代码文件中，通常这些被插入的文件包含了函数声明、宏定义、类型定义等，这些对于当前文件来说是必需的。</p>
+<p>对于编译器而言， <code>#include</code> 预处理只是简单的复制粘贴相应的代码片段，因此重复 <code>#include</code> 一个含有函数定义的文件会遇到重复定义的问题。为了解决这个问题，我们尽量不要 <code>#include</code>  .c 文件，而是将这些文件中需要从外部访问的部分（接口函数）单独写到 .h 文件中（.h文件通常被称为头文件，只用于 <code>#include</code> ）， 头文件只含有函数声明、宏定义、类型定义，而没有函数定义。</p>
+<p>我们在 <code>./src</code> 目录下实现一个hello.c作为范例，后面将使用头文件进行封装。</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">void</span> <span class="title function_">hello</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello, include!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+
+
+<h3 id="Include-Guards"><a href="#Include-Guards" class="headerlink" title="Include Guards"></a>Include Guards</h3><p>为了进一步避免重复 <code>#include</code> 问题（即使在我们的处理下已经能保证重复include不会出现问题，但考虑防御性编程，还是需要增加一层防护，因为你的合作者可能并没有遵守规范），我们可以用include guards将 .h 文件包裹起来，如下：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> HELLO_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> HELLO_H</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">hello</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></div>
+
+<p>这样，我们就利用了预处理指令合理地避免了重复定义问题。</p>
+<p>将 <code>hello.h</code> 放在 <code>./include</code> 目录下以供后续使用。</p>
+<h3 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h3><p><code>make</code>工具在设计时就是为了自动处理依赖关系和构建目标。当<code>make</code>被调用时，它会检查<code>Makefile</code>中定义的目标（通常是可执行文件或库）以及它们的依赖关系。如果某个目标的依赖项（源文件、头文件、其他目标等）不存在或比目标文件更新（即依赖项被修改后目标文件尚未重新构建），<code>make</code>会自动构建这些依赖项，以确保最终的目标是最新的。</p>
+<p>这个过程通常包括以下几个步骤：</p>
+<ol>
+<li><strong>读取Makefile</strong>：<code>make</code>首先读取<code>Makefile</code>（或其他指定的构建文件），并解析其中的规则、目标和依赖关系。</li>
+<li><strong>检查依赖关系</strong>：对于指定的目标（例如，通过命令行参数指定的目标），<code>make</code>会检查其依赖关系，以确定哪些文件需要被构建或重新构建。</li>
+<li><strong>构建依赖项</strong>：如果某个依赖项不存在或比目标文件更新，<code>make</code>会按照<code>Makefile</code>中定义的规则来构建这个依赖项。这可能包括编译源文件、链接对象文件等。</li>
+<li><strong>构建目标</strong>：当所有依赖项都构建完成后，<code>make</code>会构建指定的目标。如果目标文件已经是最新的（即它的时间戳晚于所有依赖项），那么<code>make</code>可能会跳过这一步，直接认为构建成功。</li>
+<li><strong>输出信息</strong>：在构建过程中，<code>make</code>会输出相关信息，例如正在构建的文件、使用的编译器和链接器命令等。这有助于用户了解构建进度和可能的问题。</li>
+</ol>
+<p>因此，当<code>make</code>发现依赖没有构建时，它会自动构建这些依赖项，以确保最终的目标是最新的。这是<code>make</code>工具的核心功能之一，也是它被广泛用于自动化构建过程的原因。</p>
+<p>首先是简单的语法介绍：</p>
+<ul>
+<li><code>MACRO=my_macro</code> 用于定义变量，这个变量类似于C语言中的宏定义，以文本形式替换；</li>
+<li><code>$(...)</code> 用于引用变量，<code>$&lt;</code>代表（当前目标的）第一个依赖文件，<code>$@</code>代表目标文件名（即目标文件），<code>$^</code>代表所有的依赖文件；</li>
+<li><code>.PHONY</code> 伪目标，<code>.PHONY</code> 是一个特殊的目标（target），用于指示 <code>make</code> 工具某个目标不是一个真正的文件名，避免与真实存在的文件名冲突。</li>
+</ul>
+<p>接下来让我们结合以下makefile文件分析：</p>
+<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Makefile  </span></span><br><span class="line">CC=gcc  <span class="comment"># 编译器  </span></span><br><span class="line">CFLAGS=-Wall -g  <span class="comment"># 编译选项，-Wall 启用所有警告，-g 启用调试信息  </span></span><br><span class="line">INCLUDES=<span class="keyword">include</span>  <span class="comment"># 头文件搜索路径</span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 头文件搜索路径  </span></span><br><span class="line">CFLAGS+=$(INCLUDES:%=-I%)</span><br><span class="line">  </span><br><span class="line"><span class="comment"># 源文件和目标文件(依赖)</span></span><br><span class="line">SRCS=<span class="variable">$(<span class="built_in">wildcard</span> src/*.c)</span>  </span><br><span class="line">OBJS=<span class="variable">$(<span class="built_in">patsubst</span> src/%.c,obj/%.o,<span class="variable">$(SRCS)</span>)</span>  </span><br><span class="line">OBJDIR=obj</span><br><span class="line">TARGET=my_program  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 默认目标  </span></span><br><span class="line"><span class="section">all: mkdir_<span class="variable">$(OBJDIR)</span> <span class="variable">$(TARGET)</span>  </span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 编译目标  </span></span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(OBJS)</span>  </span><br><span class="line">	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> -o <span class="variable">$@</span> <span class="variable">$^</span>  </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 编译规则  </span></span><br><span class="line"><span class="variable">$(OBJDIR)</span>/%.o: src/%.c  </span><br><span class="line">	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> -c <span class="variable">$&lt;</span> -o <span class="variable">$@</span>  </span><br><span class="line">	</span><br><span class="line"><span class="comment"># 运行目标</span></span><br><span class="line"><span class="section">run: <span class="variable">$(TARGET)</span></span></span><br><span class="line">	./<span class="variable">$(TARGET)</span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 清理编译生成的文件  </span></span><br><span class="line"><span class="section">clean:  </span></span><br><span class="line">	rm -rf <span class="variable">$(OBJDIR)</span> <span class="variable">$(TARGET)</span></span><br><span class="line">  </span><br><span class="line"><span class="comment"># 创建obj目录（如果还不存在）  </span></span><br><span class="line"><span class="section">mkdir_$(OBJDIR):  </span></span><br><span class="line">	mkdir -p <span class="variable">$(OBJDIR)</span> </span><br><span class="line">  </span><br><span class="line"><span class="comment"># 伪目标</span></span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: all run clean mkdir_$(OBJDIR)   </span></span><br></pre></td></tr></table></figure></div>
+
+<p>部分语法解释：</p>
+<ul>
+<li><code>SRCS=$(wildcard src/*.c)</code>：使用<code>wildcard</code>函数查找<code>src/</code>目录下所有的<code>.c</code>文件，并将它们赋值给<code>SRCS</code>变量。</li>
+<li><code>OBJS=$(patsubst src/%.c,obj/%.o,$(SRCS))</code>：使用<code>patsubst</code>函数将<code>SRCS</code>中的每个源文件路径（如<code>src/file.c</code>）转换为对应的目标文件路径（如<code>obj/file.o</code>），并将结果赋值给<code>OBJS</code>变量。</li>
+</ul>
+<p>这个Makefile文件定义了TARGET，即默认构建的目标与其依赖项。在构建依赖项OBJS的过程中，我们看到使用了gcc的-c参数来生成目标文件但不进行链接，当目标文件（即TARGET的所有依赖）构建完成后，使用gcc将各个.o文件链接形成一个可执行文件。</p>
+<p>注意到在这个makefile文件中，并没有给编译器提供 <code>-g</code> 参数用于debug，这一点将在后续项目的可配置性章节讨论。</p>
+<p>前面我们已经实现了 <code>hello.c</code> 和 <code>hello.h</code> ，接下来实现 <code>main.c</code> :</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;hello.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    hello();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这样我们make run的时候就可以看到正常输出 <code>Hello, include!</code> 了.</p>
+<h3 id="环境变量与外部访问"><a href="#环境变量与外部访问" class="headerlink" title="环境变量与外部访问"></a>环境变量与外部访问</h3><p>API是程序间通信的桥梁（接口），当我们的程序需要与外部程序互动时（特别是预处理&#x2F;编译阶段），首先需要找到外部程序的路径。这一点可以通过环境变量实现。我们之前已经知道 PATH 决定了shell搜索程序的路径，而除了PATH之外，我们可以定义更多的环境变量。环境变量类似于所有程序都可以访问的buffer，或是“全局变量”，例如定义环境变量 <code>MY_TOOL=/path/to/my/tool</code> 就可以方便地在另一个项目的Makefile中引用。</p>
+<p>makefile在执行本职工作，即目标的构建之前，需要解析 <code>Makefile</code> 文件，在 <code>Makefile</code> 的解析过程中，你可以使用 <code>$(error ...)</code> 函数来停止解析并立即报错。使用 <code>$(error ...)</code> 可以帮助你在 <code>Makefile</code> 中实施一些强制性的规则，确保构建过程在不符合预期的情况下不会继续执行。搜索与判断外部依赖时就可以利用这个特性：</p>
+<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Sanity check</span></span><br><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(<span class="built_in">wildcard</span> <span class="variable">$(MY_TOOL)</span>/my_tool.xxx)</span>,)</span><br><span class="line">  <span class="variable">$(<span class="built_in">error</span> MY_TOOL=<span class="variable">$(MY_TOOL)</span> is not a my_tool folder)</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure></div>
+
+
+
+
+
+<h2 id="提高项目的可配置性"><a href="#提高项目的可配置性" class="headerlink" title="提高项目的可配置性"></a>提高项目的可配置性</h2><h3 id="参数化Makefile"><a href="#参数化Makefile" class="headerlink" title="参数化Makefile"></a>参数化Makefile</h3><p>提高makefile的可配置性可以方便地批量修改命令的某些属性，以下给出了一些使用技巧总结（可以结合上一章节中的Makefile范例）：</p>
+<ul>
+<li>设置是否在执行命令时显示</li>
+</ul>
+<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义一个变量来控制是否显示命令  </span></span><br><span class="line">VERBOSE ?= n</span><br><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(VERBOSE)</span>,y)  </span><br><span class="line">  Q :=  </span><br><span class="line"><span class="keyword">else</span>  </span><br><span class="line">  Q := @  </span><br><span class="line"><span class="keyword">endif</span>  </span><br><span class="line">  </span><br><span class="line"><span class="section">all:  </span></span><br><span class="line">    <span class="variable">$(Q)</span>echo <span class="string">&quot;This command will be echoed only if VERBOSE is set to 1&quot;</span>  </span><br><span class="line">    <span class="variable">$(Q)</span>gcc -o myprogram myprogram.c</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>将多个重复出现的依赖用同一个伪目标代替（类似宏定义）</li>
+<li>配置源文件路径、头文件路径</li>
+<li>编译器与编译选项（这个大多数makefile都会包含）</li>
+<li>构建工作目录build</li>
+</ul>
+<h3 id="使用多个makefile"><a href="#使用多个makefile" class="headerlink" title="使用多个makefile"></a>使用多个makefile</h3><p>当Makefile变得非常大时，它可能会变得难以阅读和维护。将构建逻辑拆分成多个文件可以使每个文件更加专注于特定的任务或模块，从而提高可读性、可维护性与可配置性。而makefile文件也有类似C的include机制。</p>
+<p>将所有配置参数集中存储在一个地方，可以极大地简化管理和维护过程。通过集中配置，管理员可以方便地查看、修改和删除配置，而无需逐个检查或修改每个应用程序或设备的配置文件。这不仅提高了工作效率，还降低了出错的风险。</p>
+<p>以下让我们尝试<strong>在主Makefile中提供并检验接口，并在config.mk集中配置参数，在build.mk中写编译和构建过程</strong>，最后在主README中添加需要手动更改的选项说明。以下是一个主Makefile示例</p>
+<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include</span> conf.mk</span><br><span class="line"><span class="keyword">include</span> build.mk</span><br><span class="line"><span class="comment"># Sanity check</span></span><br><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(<span class="built_in">wildcard</span> <span class="variable">$(MY_TOOL)</span>/my_tool.xxx)</span>,)</span><br><span class="line">  <span class="variable">$(<span class="built_in">error</span> MY_TOOL=<span class="variable">$(MY_TOOL)</span> is not a my_tool folder)</span></span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"></span><br><span class="line">make_dir:=<span class="variable">$(<span class="built_in">shell</span> pwd)</span></span><br><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(make_dir)</span>,THIS_TOOL)</span><br><span class="line">  <span class="variable">$(<span class="built_in">error</span> MY_TOOL=<span class="variable">$(MY_TOOL)</span> is not a my_tool folder)</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure></div>
+
+<p>这个文件做了以下几件事：</p>
+<ul>
+<li>include配置文件、构建文件</li>
+<li>检验它的依赖 <code>MY_TOOL</code> 是否存在</li>
+<li>检验它自身有没有被合理地添加环境变量供别的程序调用</li>
+</ul>
+<h3 id="include配置宏"><a href="#include配置宏" class="headerlink" title="include配置宏"></a>include配置宏</h3><p>在前文中，我们已经体会到了makefile配置和简易的C配置宏的思想：通过define和ifdef控制哪些代码部分需要编译或跳过</p>
+<p>这里我们可以 <code>#include &lt;config.h&gt;</code> 的方式来将配置集中到一个文件中。这样我们就完成了配置和实现的隔离——配置宏中只修改有关编译的配置，源文件只根据配置实现功能。</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config.h  </span></span><br><span class="line">  </span><br><span class="line"><span class="comment">// 使用宏定义来控制是否启用某个功能  </span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> CONFIG_H  </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CONFIG_H  </span></span><br><span class="line">  </span><br><span class="line"><span class="comment">// 定义一个名为 FEATURE_A 的宏，默认值为 0（关闭）  </span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> FEATURE_A  </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FEATURE_A 0  </span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* enter your config macro here*/</span></span><br><span class="line">  </span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// CONFIG_H</span></span></span><br></pre></td></tr></table></figure></div>
+
+
+
+
+
+<h3 id="利用Kconfig生成自动配置"><a href="#利用Kconfig生成自动配置" class="headerlink" title="利用Kconfig生成自动配置"></a>利用Kconfig生成自动配置</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="/images/image-20240531142517117.png"
+                      alt="image-20240531142517117"
+                ></p>
+<p>Kconfig是Linux内核配置系统的一部分，它提供了直观的用户界面，用于配置Linux内核的各种特性和选项，且可以方便地处理配置之间的依赖关系。我们可以借用Kconfig的图形化配置菜单完成项目的自动配置。</p>
+<p>由于本人并不理解Kconfig的原理（看了一天源码也没看明白），所以这里没法给出通用方案，就说说menu里面提供好的接口吧。</p>
+<p>打开nemu目录下的Kconfig，同时在终端打开 <code>make menuconfig</code> ， 将各个选项逐一比照，很快就能发现对应关系。这时添加新配置就成了一件简单的事情。</p>
+<p>添加完配置选项，并配置后，找到生成的自动配置宏，可以看到我们设置的配置宏被启用了。</p>
+<p>推荐一个好的教程视频：<a class="link"   target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=C6YYE_6vVg0" >3.1 Introduction to Kconfig (youtube.com)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p>等博主看懂Kconfig了这块可能会更新（咕咕咕）</p>
+<h3 id="typedef与函数指针"><a href="#typedef与函数指针" class="headerlink" title="typedef与函数指针"></a>typedef与函数指针</h3><p>前面说的都是预处理或者编译阶段（静态）的配置，下面讨论一下执行阶段（动态）的配置：通过参数动态控制执行哪一个函数</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="title function_">int</span> <span class="params">(*compare_cb)</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>;</span><br><span class="line">compare_cb my_compare_function; <span class="comment">// 声明一个compare_cb类型的变量  </span></span><br><span class="line">  </span><br><span class="line"><span class="comment">// 假设你有一个满足签名的函数  </span></span><br><span class="line"><span class="type">int</span> <span class="title function_">compare_ints</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;  </span><br><span class="line">    <span class="keyword">return</span> a - b;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">// 你可以让my_compare_function指向这个函数  </span></span><br><span class="line">my_compare_function = compare_ints;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">// 现在你可以通过my_compare_function来调用compare_ints函数  </span></span><br><span class="line"><span class="type">int</span> result = my_compare_function(<span class="number">5</span>, <span class="number">3</span>); <span class="comment">// result将是2</span></span><br></pre></td></tr></table></figure></div>
+
+<p>第一行定义了一个类型 <code>compare_cb</code> ，这个类型是一个函数指针类型，指向一个接受两个 <code>int</code> 参数并返回一个 <code>int</code> 值的函数。另外，也可以不使用 <code>typedef</code> 直接声明一个函数指针 <code>int (*compare_cb)(int a, int b);</code> 直接声明的话， <code>compare_cb</code> 就是一个函数指针变量。</p>
+<p>因为函数指针类型也可以作为函数的参数类型，因此使用函数指针可以灵活地将函数传入函数，以在同一个函数中实现不同的功能。</p>
+<p>我们可以尝试使用C++的algorithm库中的 <code>std::sort</code> 函数（本文中不附使用例，大家自行STFW），它有一个函数指针参数，传入一个比较函数来确定两个元素的大小。这可以灵活地在运行时决定sort以何种方式排布元素。</p>
+<h2 id="程序正确性验证"><a href="#程序正确性验证" class="headerlink" title="程序正确性验证"></a>程序正确性验证</h2><h3 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h3><p>单元测试能够确保每个代码单元（如函数、类、模块）按照预期的方式运行，没有错误。通过编写和运行单元测试，开发者可以在早期发现并修复错误，从而提高代码质量。</p>
+<p>随机生成测试用例是编写单元测试的一个好方法，它极大节省了人工编写测试用例的成本，但也有效率低下等不足（特别是难以生成不合法的测试用例以测试程序的鲁棒性）。</p>
+<p>我们需要保证在随机生成测试用例时，同时给出预期的结果，再与你要测试的程序输出进行比对。这同时也说明了测试用例结果正确的重要性（如果标准都不能保证正确，那谈何比对）。于是我们可以用更慢但容易保证正确性的算法作为基准。下面给出一个使用场景示例：</p>
+<blockquote>
+<p>你需要实现一个使用FFT加速的高精度乘法计算器，输入整数a和b输出a*b（其中a，b最大为10^30）。这时候我们就可以利用python的自带高精度计算功能生成绝对准确的测试用例，再使用命令行工具比对。</p>
+</blockquote>
+<p>我们甚至可以利用脚本自动化生成——比对这一过程，以提高测试效率。</p>
+<h3 id="调试宏与错误检查"><a href="#调试宏与错误检查" class="headerlink" title="调试宏与错误检查"></a>调试宏与错误检查</h3><p>使用调试宏可以方便地定位错误与输出错误信息，<em>learn C the hard way</em> 给了一组调试宏：<a class="link"   target="_blank" rel="noopener" href="https://www.cntofu.com/book/25/ex20.md" >练习20：Zed的强大的调试宏<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<p>这里把它引用过来：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __dbg_h__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __dbg_h__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> NDEBUG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> debug(M, ...)</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> debug(M, ...) fprintf(stderr, <span class="string">&quot;DEBUG %s:%d: &quot;</span> M <span class="string">&quot;\n&quot;</span>, __FILE__, __LINE__, ##__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> clean_errno() (errno == 0 ? <span class="string">&quot;None&quot;</span> : strerror(errno))</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> log_err(M, ...) fprintf(stderr, <span class="string">&quot;[ERROR] (%s:%d: errno: %s) &quot;</span> M <span class="string">&quot;\n&quot;</span>, __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> log_warn(M, ...) fprintf(stderr, <span class="string">&quot;[WARN] (%s:%d: errno: %s) &quot;</span> M <span class="string">&quot;\n&quot;</span>, __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> log_info(M, ...) fprintf(stderr, <span class="string">&quot;[INFO] (%s:%d) &quot;</span> M <span class="string">&quot;\n&quot;</span>, __FILE__, __LINE__, ##__VA_ARGS__)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> check(A, M, ...) <span class="keyword">if</span>(!(A)) &#123; log_err(M, ##__VA_ARGS__); errno=0; goto <span class="keyword">error</span>; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> sentinel(M, ...)  &#123; log_err(M, ##__VA_ARGS__); errno=0; goto <span class="keyword">error</span>; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> check_mem(A) check((A), <span class="string">&quot;Out of memory.&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> check_debug(A, M, ...) <span class="keyword">if</span>(!(A)) &#123; debug(M, ##__VA_ARGS__); errno=0; goto <span class="keyword">error</span>; &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>它的简单原理可以阐述如下：</p>
+<ul>
+<li>为往stderr里写错误信息（因为stderr可以方便地重定向与stdout分开）</li>
+<li>以可配置的 <code>debug()</code> 宏来选择开启或关闭代码中的 <code>debug()</code> 信息输出</li>
+<li>在触发错误时自动跳转到函数的 <code>error:</code> 标签处进行自动错误处理</li>
+</ul>
+<p>我们可以很方便地对它做一些升级：</p>
+<ul>
+<li>增加配置选项，决定是否重定向 <code>stderr</code> 到文件</li>
+</ul>
+<h3 id="内存检测工具：sanitizer"><a href="#内存检测工具：sanitizer" class="headerlink" title="内存检测工具：sanitizer"></a>内存检测工具：sanitizer</h3><p><strong>注</strong>：本节只讨论简单使用，并不涉及实现细节。</p>
+<p><code>-fsanitize=address</code> 是 <code>gcc</code> 提供的一个编译选项，用于启用 AddressSanitizer（简称 ASan 或 ASanitizer），这是一个快速的内存错误检测器。</p>
+<p>当你使用 <code>-fsanitize=address</code> 选项编译你的程序时，ASan 会被嵌入到你的程序中，用于在运行时检测各种内存错误，如：</p>
+<ul>
+<li>Use after free</li>
+<li>Heap buffer overflow</li>
+<li>Stack buffer overflow</li>
+<li>Global buffer overflow</li>
+<li>Use after return</li>
+<li>Use after scope</li>
+<li>Initialization order bugs</li>
+<li>Memory leaks</li>
+</ul>
+<p>在编译时，你可以这样使用它：</p>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -fsanitize=address your_program.c -o your_program</span><br></pre></td></tr></table></figure></div>
+
+<p>当你运行编译后的程序时，如果 ASan 检测到任何内存错误，它会输出一个详细的错误报告，告诉你错误发生的位置和可能的原因。</p>
+<p>需要注意的是，由于 ASan 需要额外的内存来跟踪你的程序的内存访问，因此它可能会使你的程序运行得更慢，并消耗更多的内存。但是，在开发阶段和调试阶段，这种开销通常是值得的，因为它可以帮助你快速发现并修复内存错误。</p>
+<p>另外，ASan 也支持一些其他的选项和配置，以提供更详细或更精确的错误报告。你可以通过 <code>man gcc</code> 并搜索 <code>-fsanitize</code> 或在线查看 <code>gcc</code> 的文档来了解更多关于 ASan 的信息。</p>
+<p>除了 ASan 以外，还可以使用它的升级版 HWAson（Hardware-assisted Address Sanitizer），它降低了额外的性能开销，但只能在64位机器上使用。</p>
+<p><strong>注意</strong>：gcc的帧指针优化（建议debug时开启 <code>-fno-omit-frame-pointe</code> 选项）或os的内存保护机制可能使得 ASan 的内存检测无法正常工作。</p>
+<p>以下给出 Asan 的使用示例：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// asan_test.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Enter a number:\n&quot;</span>);</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, i); <span class="comment">// this is an error line</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;You entered: %d\n&quot;</span>, i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>编写Makefile：</p>
+<div class="code-container" data-rel="Makefile"><figure class="iseeu highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ASAN_EN=y</span><br><span class="line">ASAN_FLAGS=</span><br><span class="line">TARGET=asan_test</span><br><span class="line"></span><br><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(ASAN_EN)</span>, y)</span><br><span class="line">ASAN_FLAGS+=-fsanitize=address -fno-omit-frame-pointer</span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(TARGET)</span>:</span><br><span class="line">	gcc -g <span class="variable">$(ASAN_FLAGS)</span> -o <span class="variable">$(TARGET)</span> asan_test.c</span><br><span class="line"></span><br><span class="line"><span class="section">all: <span class="variable">$(TARGET)</span></span></span><br><span class="line">	</span><br><span class="line"><span class="section">run: <span class="variable">$(TARGET)</span></span></span><br><span class="line">	./<span class="variable">$(TARGET)</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -f <span class="variable">$(TARGET)</span></span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: all run clean</span></span><br></pre></td></tr></table></figure></div>
+
+<p>运行 <code>./asan.test</code> ，可以看到输出了如下内容：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">AddressSanitizer:DEADLYSIGNAL</span><br><span class="line">=================================================================</span><br><span class="line">==17159==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x7faaa3e67149 bp 0x7ffc45611dd0 sp 0x7ffc456116d0 T0)</span><br><span class="line">==17159==The signal is caused by a WRITE memory access.</span><br><span class="line">==17159==Hint: address points to the zero page.</span><br><span class="line">    #0 0x7faaa3e67149 in __vfscanf_internal stdio-common/vfscanf-internal.c:1896</span><br><span class="line">    #1 0x7faaa425d49c in __interceptor___isoc99_vscanf ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1530</span><br><span class="line">    #2 0x7faaa425d5e6 in __interceptor___isoc99_scanf ../../../../src/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1551</span><br><span class="line">    #3 0x64272fc1e243 in main /home/hela/Desktop/ysyx-workbench/Preliminary/AsanTest/asan_test.c:6</span><br><span class="line">    #4 0x7faaa3e29d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58</span><br><span class="line">    #5 0x7faaa3e29e3f in __libc_start_main_impl ../csu/libc-start.c:392</span><br><span class="line">    #6 0x64272fc1e144 in _start (/home/hela/Desktop/ysyx-workbench/Preliminary/AsanTest/asan_test+0x1144)</span><br><span class="line"></span><br><span class="line">AddressSanitizer can not provide additional info.</span><br><span class="line">SUMMARY: AddressSanitizer: SEGV stdio-common/vfscanf-internal.c:1896 in __vfscanf_internal</span><br><span class="line">==17159==ABORTING</span><br></pre></td></tr></table></figure></div>
+
+<p>信息块的前3行告诉我们发生了什么：</p>
+<ul>
+<li>SEGV（段错误）</li>
+<li>这个信号（段错误）由写内存引起</li>
+<li>尝试访问的地址位于零页（在大多数操作系统中，零页是保护的，不能被用户进程访问）</li>
+</ul>
+<p>接下来是堆栈跟踪，即打印出函数的调用栈，可以看到其中有sanitizer的替换调用 <code>__interceptor___isoc99_scanf</code> ，具体技术细节可以参考<a class="link"   target="_blank" rel="noopener" href="https://enna1.github.io/post/how-sanitizer-interceptor-works/" >How Sanitizer Interceptor Works - Enna1’s website<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> </p>
+<h3 id="内存检测工具：Valgrind"><a href="#内存检测工具：Valgrind" class="headerlink" title="内存检测工具：Valgrind"></a>内存检测工具：Valgrind</h3><p>Valgrind是与sanitizer类似的一款内存检测工具，这里只做简单介绍。</p>
+<p>首先是从源码安装程序：（建议下载最新版）</p>
+<div class="code-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1) Download it</span></span><br><span class="line">wget https://sourceware.org/pub/valgrind/valgrind-3.23.0.tar.bz2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">use <span class="built_in">md5sum</span> to make sure it matches the one on the site</span></span><br><span class="line">md5sum valgrind-3.23.0.tar.bz2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2) Unpack it and remove the bz2 file</span></span><br><span class="line">tar -xjvf valgrind-3.23.0.tar.bz2</span><br><span class="line">rm valgrind-3.23.0.tar.bz2</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">cd</span> into the newly created directory</span></span><br><span class="line">cd valgrind-3.23.0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">3) configure it</span></span><br><span class="line">./configure</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">4) make it</span></span><br><span class="line">make</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">5) install it (need root)</span></span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>我们利用sanitizer一节的测试代码：</p>
+<ol>
+<li>设置 <code>ASAN_EN=n</code> 以禁用Asan</li>
+<li>设置 <code>TARGET=valgrind_test</code></li>
+<li>构建默认目标，并用Valgrind运行：<code>valgrind --leak-check=yes ./valgrind_test</code></li>
+</ol>
+<p>其实我们还可以在make run里面加一点参数来自动调用valgrind，但valgrind最好不要和sanitizer一起使用，因此我们多了一项处理配置冲突的工作。这一点将在后面复杂项目的调试中继续讨论。</p>
+<p>以下是valgrind的输出：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">==18546== Memcheck, a memory error detector</span><br><span class="line">==18546== Copyright (C) 2002-2024, and GNU GPL&#x27;d, by Julian Seward et al.</span><br><span class="line">==18546== Using Valgrind-3.23.0 and LibVEX; rerun with -h for copyright info</span><br><span class="line">==18546== Command: ./valgrind_test</span><br><span class="line">==18546== </span><br><span class="line">Enter a number:</span><br><span class="line">123</span><br><span class="line">==18546== Invalid write of size 4</span><br><span class="line">==18546==    at 0x48D8149: __vfscanf_internal (vfscanf-internal.c:1896)</span><br><span class="line">==18546==    by 0x48D3141: __isoc99_scanf (isoc99_scanf.c:30)</span><br><span class="line">==18546==    by 0x1091C3: main (asan_test.c:6)</span><br><span class="line">==18546==  Address 0x0 is not stack&#x27;d, malloc&#x27;d or (recently) free&#x27;d</span><br><span class="line">==18546== </span><br><span class="line">==18546== </span><br><span class="line">==18546== Process terminating with default action of signal 11 (SIGSEGV)</span><br><span class="line">==18546==  Access not within mapped region at address 0x0</span><br><span class="line">==18546==    at 0x48D8149: __vfscanf_internal (vfscanf-internal.c:1896)</span><br><span class="line">==18546==    by 0x48D3141: __isoc99_scanf (isoc99_scanf.c:30)</span><br><span class="line">==18546==    by 0x1091C3: main (asan_test.c:6)</span><br><span class="line">==18546==  If you believe this happened as a result of a stack</span><br><span class="line">==18546==  overflow in your program&#x27;s main thread (unlikely but</span><br><span class="line">==18546==  possible), you can try to increase the size of the</span><br><span class="line">==18546==  main thread stack using the --main-stacksize= flag.</span><br><span class="line">==18546==  The main thread stack size used in this run was 8388608.</span><br><span class="line">==18546== </span><br><span class="line">==18546== HEAP SUMMARY:</span><br><span class="line">==18546==     in use at exit: 2,048 bytes in 2 blocks</span><br><span class="line">==18546==   total heap usage: 2 allocs, 0 frees, 2,048 bytes allocated</span><br><span class="line">==18546== </span><br><span class="line">==18546== LEAK SUMMARY:</span><br><span class="line">==18546==    definitely lost: 0 bytes in 0 blocks</span><br><span class="line">==18546==    indirectly lost: 0 bytes in 0 blocks</span><br><span class="line">==18546==      possibly lost: 0 bytes in 0 blocks</span><br><span class="line">==18546==    still reachable: 2,048 bytes in 2 blocks</span><br><span class="line">==18546==         suppressed: 0 bytes in 0 blocks</span><br><span class="line">==18546== Reachable blocks (those to which a pointer was found) are not shown.</span><br><span class="line">==18546== To see them, rerun with: --leak-check=full --show-leak-kinds=all</span><br><span class="line">==18546== </span><br><span class="line">==18546== For lists of detected and suppressed errors, rerun with: -s</span><br><span class="line">==18546== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)</span><br></pre></td></tr></table></figure></div>
+
+<p>可以看到 <code>Address 0x0 is not stack&#39;d, malloc&#39;d or (recently) free&#39;d</code> 和之前输出的调用栈，以及后面的段错误退出提示。</p>
+<p>相比sanitizer，它可以输出更详细的信息以及提示。并且我们可以使用 <code>man valgrind</code> 获取详细的手册或者前往官网<a class="link"   target="_blank" rel="noopener" href="https://valgrind.org/" >Valgrind Home<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>以获取更多信息。</p>
+
+		</div>
+
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/C/">#C</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/GNU-make/">#GNU make</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2025/07/01/electrodynamics/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">电动力学：电磁波部分公式推导</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2024/05/08/linux-cli-intro/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">命令行入门(linux)</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">C语言进阶</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E9%80%9A%E7%94%A8%E7%9A%84%E7%BC%96%E7%A8%8B%E6%80%9D%E6%83%B3"><span class="nav-text">一些通用的编程思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E6%B8%85%E6%96%87%E4%BB%B6%E4%B9%8B%E9%97%B4%E7%9A%84%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB"><span class="nav-text">理清文件之间的依赖关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Include"><span class="nav-text">Include</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Include-Guards"><span class="nav-text">Include Guards</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Makefile"><span class="nav-text">Makefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E4%B8%8E%E5%A4%96%E9%83%A8%E8%AE%BF%E9%97%AE"><span class="nav-text">环境变量与外部访问</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E9%AB%98%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%8F%AF%E9%85%8D%E7%BD%AE%E6%80%A7"><span class="nav-text">提高项目的可配置性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96Makefile"><span class="nav-text">参数化Makefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAmakefile"><span class="nav-text">使用多个makefile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include%E9%85%8D%E7%BD%AE%E5%AE%8F"><span class="nav-text">include配置宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8Kconfig%E7%94%9F%E6%88%90%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-text">利用Kconfig生成自动配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#typedef%E4%B8%8E%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"><span class="nav-text">typedef与函数指针</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E6%AD%A3%E7%A1%AE%E6%80%A7%E9%AA%8C%E8%AF%81"><span class="nav-text">程序正确性验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E5%AE%8F%E4%B8%8E%E9%94%99%E8%AF%AF%E6%A3%80%E6%9F%A5"><span class="nav-text">调试宏与错误检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%9Asanitizer"><span class="nav-text">内存检测工具：sanitizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%9AValgrind"><span class="nav-text">内存检测工具：Valgrind</span></a></li></ol></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2023</span>
+              -
+            
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Hela</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        9 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
